@@ -30,6 +30,10 @@ public class Day {
     @JoinColumn(name = "FK_NUTRITION_ID", nullable = false)
     private Nutrition nutrition;
 
+    @ManyToOne
+    @JoinColumn(name = "FK_WORKOUT_ROUTINE_ID", nullable = false)
+    private WorkoutRoutine workoutRoutine;
+
     @Column(name = "LOGGED_DATE")
     private LocalDate loggedDate;
 

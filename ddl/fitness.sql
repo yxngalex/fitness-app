@@ -51,7 +51,7 @@ create table DAY
    DAY_ID               int not null AUTO_INCREMENT,
    FK_NUTRITION_ID      int not null,
    FK_USER_ID           int not null,
-   WORKOUT_ROUTINE_ID   int,
+   FK_WORKOUT_ROUTINE_ID   int,
    LOGGED_DATE          date,
    IS_DELETED           bool,
    primary key (DAY_ID)

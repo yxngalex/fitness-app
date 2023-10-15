@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "user")
-@Where(clause = "WHERE IS_DELETED is null or IS_DELETED = false")
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
