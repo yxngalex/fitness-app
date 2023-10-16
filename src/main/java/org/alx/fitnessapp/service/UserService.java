@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    UserDTO registerUser(UserDTO userDTO) throws UserAlreadyExistsException;
+    String registerUser(UserDTO userDTO) throws UserAlreadyExistsException;
 
     UserDTO loginUser(UserDTO userDTO);
 }

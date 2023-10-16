@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private final TokenProvider tokenProvider;
 
     @Override
-    public UserDTO registerUser(UserDTO userDTO) throws UserAlreadyExistsException {
+    public String registerUser(UserDTO userDTO) throws UserAlreadyExistsException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new UserAlreadyExistsException("User already exists!");
         }
@@ -39,7 +39,9 @@ public class UserServiceImpl implements UserService {
         User user = userDTOConverter.convertUserDTOToUser(userDTO);
         user.setIsDeleted(false);
 
-        return userDTOConverter.convertUserToUserDTO(userRepository.save(user));
+        userRepository.save(user);
+
+        return "User registered successfully!";
     }
 
     @Override

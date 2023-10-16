@@ -3,11 +3,11 @@ package org.alx.fitnessapp.model.dto;
 import lombok.Data;
 
 @Data
-public class AuthResponseDTO {
+public class LoginResponseDTO {
     private String accessToken;
     private String tokenType = "Bearer ";
 
-    public AuthResponseDTO(String accessToken) {
+    public LoginResponseDTO(String accessToken) {
         this.accessToken = accessToken;
     }
 

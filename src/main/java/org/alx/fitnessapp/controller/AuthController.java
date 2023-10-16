@@ -2,7 +2,7 @@ package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.exception.UserAlreadyExistsException;
-import org.alx.fitnessapp.model.dto.AuthResponseDTO;
+import org.alx.fitnessapp.model.dto.LoginResponseDTO;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.security.TokenProvider;
 import org.alx.fitnessapp.service.UserService;
@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,23 +27,22 @@ public class AuthController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> register(@RequestBody UserDTO userDTO) {
         try {
-            return ResponseEntity.ok(userService.registerUser(userDTO));
+            return new ResponseEntity<>(userService.registerUser(userDTO), HttpStatus.OK);
         } catch (UserAlreadyExistsException e) {
             throw new RuntimeException(e);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody UserDTO userDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.generateToken(authentication);
 
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        return new ResponseEntity<>(new LoginResponseDTO(token), HttpStatus.OK);
     }
-
 }
