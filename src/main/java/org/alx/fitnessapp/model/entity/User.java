@@ -26,6 +26,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TrophyUser> trophyUsers = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "user_goal", joinColumns = @JoinColumn(name = "FK_USER_ID"), inverseJoinColumns = @JoinColumn(name = "FK_GOAL_ID"))
+    private List<Goal> goals = new ArrayList<>();
+
     @Column(name = "LAST_NAME")
     private String lastName;
 

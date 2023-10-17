@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,10 +21,6 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GOAL_ID", nullable = false)
     private Integer id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "FK_USER_ID", nullable = false)
-    private User user;
 
     @Column(name = "WEIGHT_GOAL", precision = 10)
     private Double weightGoal;

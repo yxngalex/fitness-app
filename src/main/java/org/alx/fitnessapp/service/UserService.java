@@ -2,14 +2,16 @@ package org.alx.fitnessapp.service;
 
 
 import org.alx.fitnessapp.exception.UserAlreadyExistsException;
+import org.alx.fitnessapp.model.dto.GoalDTO;
 import org.alx.fitnessapp.model.dto.UserDTO;
-import org.alx.fitnessapp.model.entity.User;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserService {
 
     String registerUser(UserDTO userDTO) throws UserAlreadyExistsException;
 
-    UserDTO loginUser(UserDTO userDTO);
+    UserDTO getByUsername(String username);
+
+    List<GoalDTO> getGoals(UserDTO userDTO);
 }
