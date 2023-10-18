@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +24,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TrophyUser> trophyUsers = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "user_goal", joinColumns = @JoinColumn(name = "FK_USER_ID"), inverseJoinColumns = @JoinColumn(name = "FK_GOAL_ID"))
-    private List<Goal> goals = new ArrayList<>();
+    @ManyToOne()
+    @JoinColumn(name = "FK_GOAL_ID")
+    private Goal goal;
 
     @Column(name = "LAST_NAME")
     private String lastName;

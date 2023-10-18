@@ -16,5 +16,5 @@ public class UserDTO {
     private Integer age;
     private String gender;
     private String currentBodyType;
-    private List<GoalDTO> goals;
+    private GoalDTO goal;
 }

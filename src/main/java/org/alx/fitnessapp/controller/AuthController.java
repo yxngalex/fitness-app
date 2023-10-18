@@ -2,7 +2,7 @@ package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.exception.UserAlreadyExistsException;
-import org.alx.fitnessapp.model.dto.LoginResponseDTO;
+import org.alx.fitnessapp.model.dto.LoginResponse;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.security.TokenProvider;
 import org.alx.fitnessapp.service.UserService;
@@ -36,13 +36,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<LoginResponse> login(@RequestBody UserDTO userDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.generateToken(authentication);
 
-        return new ResponseEntity<>(new LoginResponseDTO(token), HttpStatus.OK);
+        return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
     }
 }

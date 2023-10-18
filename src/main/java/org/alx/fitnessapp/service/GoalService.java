@@ -1,11 +1,17 @@
 package org.alx.fitnessapp.service;
 
 import org.alx.fitnessapp.model.dto.GoalDTO;
-import org.alx.fitnessapp.model.dto.UserDTO;
 
 import java.util.List;
 
+
 public interface GoalService {
-    String updateGoalList(UserDTO userDTO);
+    String createGoal(GoalDTO goalDTO);
+
+    GoalDTO getGoal();
+
+    GoalDTO updateGoal(GoalDTO goalDTO);
+
+    String deleteGoal(Integer goalId);
 
 }

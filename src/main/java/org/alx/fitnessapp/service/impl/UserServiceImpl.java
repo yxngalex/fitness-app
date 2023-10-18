@@ -15,6 +15,8 @@ import org.alx.fitnessapp.repository.UserRepository;
 import org.alx.fitnessapp.service.UserService;
 import org.alx.fitnessapp.util.EmailValidation;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,18 +51,18 @@ public class UserServiceImpl implements UserService {
         try {
             userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-            List<Goal> goals = goalRepository.saveAll(userDTO.getGoals().stream()
-                    .map(goalConverter::convertGoalDTOToGoal)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
-
             User user;
+
+            Goal goal = goalConverter.convertGoalDTOToGoal(userDTO.getGoal());
+
+            if (goal != null)
+                goalRepository.save(goal);
 
             if (EmailValidation.isValid(userDTO.getEmail())) {
                 user = userConverter.convertUserDTOToUser(userDTO);
 
-                user.setGoals(goals);
                 user.setIsDeleted(false);
+                user.setGoal(goal);
 
                 userRepository.save(user);
             }
@@ -80,13 +82,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GoalDTO> getGoals(UserDTO userDTO) {
-        List<Goal> goalsByUser = userRepository.findByUsername(userDTO.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User does not exist")).getGoals();
+    public User getLoggedUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-
-        return goalsByUser.stream().map(goalConverter::convertGoalToGoalDTO).collect(Collectors.toList());
-
+        return userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User does not exist"));
     }
 
 }
