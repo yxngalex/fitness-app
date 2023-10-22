@@ -58,7 +58,4 @@ public class User {
     @Column(name = "GENDER")
     private String gender;
 
-    @Column(name = "CURRENT_BODY_TYPE")
-    private String currentBodyType;
-
 }

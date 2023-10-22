@@ -15,6 +15,5 @@ public class UserDTO {
     private Double weight;
     private Integer age;
     private String gender;
-    private String currentBodyType;
     private GoalDTO goal;
 }

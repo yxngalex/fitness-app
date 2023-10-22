@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -28,5 +27,10 @@ public class ExerciseStat {
 
     @Column(name = "EXERCISE_WEIGHT", precision = 10)
     private Double exerciseWeight;
+
+    @ManyToOne()
+    @JoinColumn(name = "FK_EXERCISE_ID")
+    private Exercise exercise;
+
 
 }

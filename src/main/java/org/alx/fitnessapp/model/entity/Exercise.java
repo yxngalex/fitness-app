@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Table(name = "exercise")
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "WHERE IS_DELETED is null or IS_DELETED = false")
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +33,7 @@ public class Exercise {
     @Column(name = "FAVORITED")
     private Boolean favorited;
 
-    @Column(name = "IS_DELETED")
-    private Boolean isDeleted;
+    @Column(name = "IMAGE")
+    private String image;
 
 }

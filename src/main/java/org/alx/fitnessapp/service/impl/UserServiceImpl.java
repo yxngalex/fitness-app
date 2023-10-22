@@ -4,16 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.alx.fitnessapp.converter.GoalDTOConverter;
 import org.alx.fitnessapp.converter.UserDTOConverter;
+import org.alx.fitnessapp.exception.AgeValidationException;
 import org.alx.fitnessapp.exception.EmailValidationException;
 import org.alx.fitnessapp.exception.UserAlreadyExistsException;
-import org.alx.fitnessapp.model.dto.GoalDTO;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.Goal;
 import org.alx.fitnessapp.model.entity.User;
 import org.alx.fitnessapp.repository.GoalRepository;
 import org.alx.fitnessapp.repository.UserRepository;
 import org.alx.fitnessapp.service.UserService;
-import org.alx.fitnessapp.util.EmailValidation;
+import org.alx.fitnessapp.util.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,9 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +55,7 @@ public class UserServiceImpl implements UserService {
             if (goal != null)
                 goalRepository.save(goal);
 
-            if (EmailValidation.isValid(userDTO.getEmail())) {
+            if (Validator.isEmailValid(userDTO.getEmail()) && Validator.isAgeValid(userDTO.getAge())) {
                 user = userConverter.convertUserDTOToUser(userDTO);
 
                 user.setIsDeleted(false);
@@ -66,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
                 userRepository.save(user);
             }
-        } catch (EmailValidationException e) {
+        } catch (EmailValidationException | AgeValidationException e) {
             log.error(e.getMessage(), e);
             return e.getMessage();
         }
