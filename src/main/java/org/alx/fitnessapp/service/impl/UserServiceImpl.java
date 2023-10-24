@@ -13,7 +13,7 @@ import org.alx.fitnessapp.model.entity.User;
 import org.alx.fitnessapp.repository.GoalRepository;
 import org.alx.fitnessapp.repository.UserRepository;
 import org.alx.fitnessapp.service.UserService;
-import org.alx.fitnessapp.util.Validator;
+import org.alx.fitnessapp.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

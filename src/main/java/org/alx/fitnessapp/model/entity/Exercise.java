@@ -20,7 +20,7 @@ public class Exercise {
     @Column(name = "EXERCISE_ID", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "FK_CATEGORY_ID", nullable = false)
     private Category category;
 
@@ -30,7 +30,7 @@ public class Exercise {
     @Column(name = "EXERCISE_DESCRIPTION")
     private String exerciseDescription;
 
-    @Column(name = "FAVORITED")
+    @Column(name = "FAVORITED", nullable = false)
     private Boolean favorited;
 
     @Column(name = "IMAGE")

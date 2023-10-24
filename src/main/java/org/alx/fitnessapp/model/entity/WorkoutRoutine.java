@@ -27,8 +27,11 @@ public class WorkoutRoutine {
     private Category category;
 
     @ManyToMany
-    @JoinTable(name = "workout_routine_exercise_stats", joinColumns = @JoinColumn(name = "FK_WORKOUT_ROUTINE_ID"), inverseJoinColumns = @JoinColumn(name = "FK_EXERCISE_STATS_ID"))
-    private List<ExerciseStat> exerciseStats = new ArrayList<>();
+    @JoinTable(
+            name = "workout_routine_exercise_stats",
+            joinColumns = @JoinColumn(name = "FK_WORKOUT_ROUTINE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "FK_EXERCISE_STATS_ID"))
+    private List<ExerciseStats> exerciseStats = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_GOAL_ID")

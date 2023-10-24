@@ -5,7 +5,7 @@ import org.alx.fitnessapp.model.entity.Category;
 
 @Data
 public class ExerciseDTO {
-    private Category category;
+    private CategoryDTO categoryDTO;
     private String exerciseName;
     private String exerciseDescription;
 }

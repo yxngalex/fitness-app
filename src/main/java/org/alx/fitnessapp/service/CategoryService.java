@@ -1,12 +1,12 @@
 package org.alx.fitnessapp.service;
 
 import org.alx.fitnessapp.model.dto.CategoryDTO;
+import org.alx.fitnessapp.model.entity.Category;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    List<CategoryDTO> getAllCategories();
+    List<Category> getAllCategoriesRandomized();
 
-    CategoryDTO getCategoryByName(String name);
 }

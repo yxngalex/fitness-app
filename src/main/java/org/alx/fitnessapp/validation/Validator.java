@@ -1,4 +1,4 @@
-package org.alx.fitnessapp.util;
+package org.alx.fitnessapp.validation;
 
 import org.alx.fitnessapp.exception.AgeValidationException;
 import org.alx.fitnessapp.exception.EmailValidationException;

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,9 @@ public class Food {
     @OneToOne
     @JoinColumn(name = "FK_NUTRITION_ID", nullable = false)
     private Nutrition nutrition;
+
+    @ManyToMany(mappedBy = "foodList")
+    private List<Meal> mealList;
 
     @Lob
     @Column(name = "FOOD_NAME")
