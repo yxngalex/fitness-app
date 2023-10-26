@@ -2,9 +2,7 @@ package org.alx.fitnessapp.controller;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
-import org.alx.fitnessapp.model.dto.ExerciseDTO;
 import org.alx.fitnessapp.model.dto.WorkoutRoutineDTO;
-import org.alx.fitnessapp.model.entity.Exercise;
 import org.alx.fitnessapp.service.ExerciseService;
 import org.alx.fitnessapp.service.WorkoutRoutineService;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +15,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkoutRoutineController {
     private final WorkoutRoutineService workoutRoutineService;
-    private final ExerciseService exerciseService;
 
-    @PostMapping("/create/goal")
-    public ResponseEntity<String> createWorkoutRoutineWithGoal() {
-        return ResponseEntity.ok(workoutRoutineService.createWorkoutRoutineWithGoal());
+    @PostMapping("/create/auto")
+    public ResponseEntity<String> autoCreateWorkoutRoutine() {
+        return ResponseEntity.ok(workoutRoutineService.autoCreateWorkoutRoutine());
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createWorkoutRoutineWithoutGoal(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
-        return ResponseEntity.ok(workoutRoutineService.createWorkoutRoutineWithoutGoal(workoutRoutineDTO));
+    public ResponseEntity<String> createWorkoutRoutine(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
+        return ResponseEntity.ok(workoutRoutineService.createWorkoutRoutine(workoutRoutineDTO));
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<List<WorkoutRoutineDTO>> getWorkoutRoutineList() {
+        return ResponseEntity.ok(workoutRoutineService.getWorkoutRoutineList());
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<WorkoutRoutineDTO> updateWorkoutRoutine(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
+        return ResponseEntity.ok(workoutRoutineService.updateWorkoutRoutine(workoutRoutineDTO));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteWorkoutRoutine(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
+        return ResponseEntity.ok(workoutRoutineService.deleteWorkoutRoutine(workoutRoutineDTO));
     }
 }

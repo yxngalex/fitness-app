@@ -7,4 +7,6 @@ import java.util.List;
 public interface ExerciseService {
 
     List<Exercise> getRandomExercisesByCategory(String categoryName, int limit);
+
+    List<Exercise> getRandomExercisesWithoutCategory();
 }

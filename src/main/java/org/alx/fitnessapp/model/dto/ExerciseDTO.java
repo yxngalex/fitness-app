@@ -8,4 +8,5 @@ public class ExerciseDTO {
     private CategoryDTO categoryDTO;
     private String exerciseName;
     private String exerciseDescription;
+//    private String image;
 }

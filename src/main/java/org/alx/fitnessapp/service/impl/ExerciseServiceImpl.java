@@ -27,4 +27,12 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         return (List<Exercise>) q.getResultList();
     }
+
+    @Override
+    public List<Exercise> getRandomExercisesWithoutCategory() {
+        Query q = entityManager.createQuery("SELECT e FROM Exercise e ORDER BY RAND()");
+        q.setMaxResults(5);
+
+        return (List<Exercise>) q.getResultList();
+    }
 }

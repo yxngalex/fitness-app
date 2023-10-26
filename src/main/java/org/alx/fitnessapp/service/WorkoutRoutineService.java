@@ -3,9 +3,17 @@ package org.alx.fitnessapp.service;
 
 import org.alx.fitnessapp.model.dto.WorkoutRoutineDTO;
 
+import java.util.List;
+
 public interface WorkoutRoutineService {
 
-    String createWorkoutRoutineWithGoal();
+    String autoCreateWorkoutRoutine();
 
-    String createWorkoutRoutineWithoutGoal(WorkoutRoutineDTO workoutRoutineDTO);
+    String createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
+
+    List<WorkoutRoutineDTO> getWorkoutRoutineList();
+
+    WorkoutRoutineDTO updateWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
+
+    String deleteWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
 }

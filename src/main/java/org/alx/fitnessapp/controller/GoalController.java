@@ -15,17 +15,12 @@ public class GoalController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createGoal(@RequestBody GoalDTO goalDTO) {
-        return ResponseEntity.ok(goalService.createGoal(goalDTO));
+        return ResponseEntity.ok(goalService.createOrUpdateGoal(goalDTO));
     }
 
     @GetMapping("/get")
     public ResponseEntity<GoalDTO> getGoal() {
         return ResponseEntity.ok(goalService.getGoal());
-    }
-
-    @PostMapping("/update")
-    public ResponseEntity<GoalDTO> updateGoal(@RequestBody GoalDTO goalDTO) {
-        return ResponseEntity.ok(goalService.updateGoal(goalDTO));
     }
 
     @PostMapping("/delete/{goalId}")

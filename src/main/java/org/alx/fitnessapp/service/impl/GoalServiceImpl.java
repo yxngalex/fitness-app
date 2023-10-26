@@ -23,40 +23,38 @@ public class GoalServiceImpl implements GoalService {
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final GoalDTOConverter converter;
-    private final UserDTOConverter userConverter;
     private final UserService userService;
 
     @Override
-    @Transactional
-    public String createGoal(GoalDTO goalDTO) {
+    public String createOrUpdateGoal(GoalDTO goalDTO) {
         User user = userService.getLoggedUser();
 
-        user.setGoal(converter.convertGoalDTOToGoal(goalDTO));
+        if (user.getGoal() == null) {
+            Goal g = converter.convertGoalDTOToGoal(goalDTO);
 
-        userRepository.save(user);
-        return "Goal list updated successfully!";
+            goalRepository.save(g);
+
+            user.setGoal(g);
+            userRepository.save(user);
+
+            return "Goal created successfully!";
+        } else {
+            Goal g = user.getGoal();
+
+            g.setWeightGoal(goalDTO.getWeightGoal());
+            g.setWeeklyExercise(goalDTO.getWeeklyExercise());
+            g.setBodyTypeGoal(goalDTO.getBodyTypeGoal());
+
+            user.setGoal(g);
+            userRepository.save(user);
+            return "Goal updated successfully!";
+        }
     }
 
     @Override
     public GoalDTO getGoal() {
         User loggedUser = userService.getLoggedUser();
-        UserDTO userDTO = userConverter.convertUserToUserDTO(loggedUser);
-
-        return userDTO.getGoal();
-    }
-
-    @Override
-    public GoalDTO updateGoal(GoalDTO goalDTO) {
-        User loggedUser = userService.getLoggedUser();
-        Goal g = loggedUser.getGoal();
-
-        g.setWeightGoal(goalDTO.getWeightGoal());
-        g.setBodyTypeGoal(goalDTO.getBodyTypeGoal());
-        g.setWeeklyExercise(goalDTO.getWeeklyExercise());
-
-        goalRepository.save(g);
-
-        return converter.convertGoalToGoalDTO(g);
+        return converter.convertGoalToGoalDTO(loggedUser.getGoal());
     }
 
     @Override

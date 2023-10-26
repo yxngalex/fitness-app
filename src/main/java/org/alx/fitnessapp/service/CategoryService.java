@@ -9,4 +9,6 @@ public interface CategoryService {
 
     List<Category> getAllCategoriesRandomized();
 
+    Category getMixedCategory();
+
 }
