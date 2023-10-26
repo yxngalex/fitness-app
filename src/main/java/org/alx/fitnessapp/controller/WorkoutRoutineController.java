@@ -1,12 +1,11 @@
 package org.alx.fitnessapp.controller;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.model.dto.WorkoutRoutineDTO;
-import org.alx.fitnessapp.service.ExerciseService;
 import org.alx.fitnessapp.service.WorkoutRoutineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class WorkoutRoutineController {
         return ResponseEntity.ok(workoutRoutineService.updateWorkoutRoutine(workoutRoutineDTO));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteWorkoutRoutine(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
         return ResponseEntity.ok(workoutRoutineService.deleteWorkoutRoutine(workoutRoutineDTO));
     }

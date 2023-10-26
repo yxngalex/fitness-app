@@ -147,7 +147,13 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
         // focuses on category, date and goal id
         WorkoutRoutine wor = workoutRoutineRepository.findByCategoryIdAndGoalIdAndDateStart(cat.getId(), u.getGoal().getId(), workoutRoutineDTO.getDateStart());
 
+        if (wor.getExerciseStats() != null) {
+            for (ExerciseStats exerciseStat : wor.getExerciseStats())
+                exerciseStatsRepository.deleteById(exerciseStat.getId());
+        }
+
         workoutRoutineRepository.deleteById(wor.getId());
+
         return "Successfully deleted a workout routine";
     }
 
