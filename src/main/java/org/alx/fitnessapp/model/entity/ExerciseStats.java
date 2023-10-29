@@ -21,8 +21,6 @@ public class ExerciseStats {
     @Column(name = "EXERCISE_STATS_ID", nullable = false)
     private Integer id;
 
-//    @ManyToMany(mappedBy = "exerciseStats", cascade = CascadeType.ALL)
-//    private List<WorkoutRoutine> workoutRoutines;
     @ManyToMany(mappedBy = "exerciseStats")
     private List<WorkoutRoutine> workoutRoutines;
 

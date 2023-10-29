@@ -16,7 +16,6 @@ import java.util.List;
 @Table(name = "meal")
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "WHERE IS_DELETED is null or IS_DELETED = false")
 public class Meal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +37,5 @@ public class Meal {
     @Lob
     @Column(name = "MEAL_NAME")
     private String mealName;
-
-    @Column(name = "IS_DELETED")
-    private Boolean isDeleted;
 
 }

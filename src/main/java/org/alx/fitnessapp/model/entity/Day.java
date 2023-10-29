@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "day")
-@Where(clause = "WHERE IS_DELETED is null or IS_DELETED = false")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Day {
@@ -37,7 +36,6 @@ public class Day {
     @Column(name = "LOGGED_DATE")
     private LocalDate loggedDate;
 
-    @Column(name = "IS_DELETED")
-    private Boolean isDeleted;
-
+    @Column(name = "BMR")
+    private Double bmr;
 }

@@ -109,7 +109,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
     @Override
     public List<WorkoutRoutineDTO> getWorkoutRoutineList() {
         User user = userService.getLoggedUser();
-        List<WorkoutRoutine> workoutRoutines = workoutRoutineRepository.findAllByGoalId(user.getGoal().getId());
+        List<WorkoutRoutine> workoutRoutines = workoutRoutineRepository.findAllByUserId(user.getId());
         List<WorkoutRoutineDTO> dtos = new ArrayList<>();
 
         for (WorkoutRoutine workoutroutine : workoutRoutines) {

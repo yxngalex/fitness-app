@@ -38,7 +38,4 @@ public class Food {
     @Column(name = "SERVING")
     private Integer serving;
 
-    @Column(name = "IS_DELETED")
-    private Boolean isDeleted;
-
 }

@@ -27,7 +27,6 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final UserDTOConverter userConverter;
