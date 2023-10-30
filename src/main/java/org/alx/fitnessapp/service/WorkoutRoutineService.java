@@ -2,14 +2,15 @@ package org.alx.fitnessapp.service;
 
 
 import org.alx.fitnessapp.model.dto.WorkoutRoutineDTO;
+import org.alx.fitnessapp.model.entity.WorkoutRoutine;
 
 import java.util.List;
 
 public interface WorkoutRoutineService {
 
-    String autoCreateWorkoutRoutine();
+    List<WorkoutRoutine> autoCreateWorkoutRoutine();
 
-    String createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
+    WorkoutRoutine createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
 
     List<WorkoutRoutineDTO> getWorkoutRoutineList();
 

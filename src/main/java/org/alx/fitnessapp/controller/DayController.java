@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.service.DayService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/day")
@@ -15,8 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class DayController {
     private final DayService dayService;
 
+    @PostMapping("/auto")
+    public ResponseEntity<String> autoCreateDay() {
+        return ResponseEntity.ok(dayService.autoCreateDay());
+    }
+
     @PostMapping("/create")
     public ResponseEntity<String> createDay(@RequestBody DayDTO dayDTO) {
         return ResponseEntity.ok(dayService.createDay(dayDTO));
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<List<DayDTO>> getDaysForUser() {
+        return ResponseEntity.ok(dayService.getDays());
     }
 }

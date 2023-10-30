@@ -26,11 +26,11 @@ public class Day {
     private User user;
 
     @OneToOne
-    @JoinColumn(name = "FK_NUTRITION_ID", nullable = false)
+    @JoinColumn(name = "FK_NUTRITION_ID")
     private Nutrition nutrition;
 
     @ManyToOne
-    @JoinColumn(name = "FK_WORKOUT_ROUTINE_ID", nullable = false)
+    @JoinColumn(name = "FK_WORKOUT_ROUTINE_ID")
     private WorkoutRoutine workoutRoutine;
 
     @Column(name = "LOGGED_DATE")

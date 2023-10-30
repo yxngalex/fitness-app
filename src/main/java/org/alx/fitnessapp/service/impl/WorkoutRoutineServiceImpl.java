@@ -25,16 +25,16 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
     private final ExerciseService exerciseService;
     private final WorkoutRoutineDTOConverter converter;
     private final CategoryRepository categoryRepository;
-    private final GoalRepository goalRepository;
 
 
     @Override
-    public String autoCreateWorkoutRoutine() {
+    public List<WorkoutRoutine> autoCreateWorkoutRoutine() {
         User loggedInUser = userService.getLoggedUser();
 
         if (loggedInUser.getGoal() != null) {
             if (loggedInUser.getGoal().getWeeklyExercise() >= 3 && loggedInUser.getGoal().getWeeklyExercise() <= 6) {
                 List<Category> categoriesForRoutine = categoryService.getAllCategoriesRandomized();
+                List<WorkoutRoutine> savedRoutines = new ArrayList<>();
 
                 for (int i = 0; i < loggedInUser.getGoal().getWeeklyExercise(); i++) {
                     WorkoutRoutine workoutRoutine = new WorkoutRoutine();
@@ -50,10 +50,12 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
                         workoutRoutine.setExerciseStats(exerciseStats);
                     }
                     workoutRoutineRepository.save(workoutRoutine);
+                    savedRoutines.add(workoutRoutine);
                 }
-                return "Successfully created " + loggedInUser.getGoal().getWeeklyExercise() + " workout routines!";
+                return savedRoutines;
             } else if (loggedInUser.getGoal().getWeeklyExercise() < 3) {
                 Category mixedCategory = categoryService.getMixedCategory();
+                List<WorkoutRoutine> savedRoutines = new ArrayList<>();
                 for (int i = 0; i < loggedInUser.getGoal().getWeeklyExercise(); i++) {
                     WorkoutRoutine workoutRoutine = new WorkoutRoutine();
                     workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
@@ -67,16 +69,17 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
                     workoutRoutine.setExerciseStats(exerciseStats);
 
                     workoutRoutineRepository.save(workoutRoutine);
+                    savedRoutines.add(workoutRoutine);
                 }
-                return "Successfully created " + loggedInUser.getGoal().getWeeklyExercise() + " workout routines!";
+                return savedRoutines;
             }
         }
-        return "Error while creating a workout routine!";
+        return null;
     }
 
 
     @Override
-    public String createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO) {
+    public WorkoutRoutine createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO) {
         WorkoutRoutine wroToSave = converter.convertWorkoutRoutineDTOToWorkoutRoutine(workoutRoutineDTO);
         Category cat = categoryRepository.findCategoryByCategoryName(wroToSave.getCategory().getCategoryName());
         List<ExerciseStats> stats = new ArrayList<>();
@@ -101,9 +104,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
         wroToSave.setCategory(cat);
         wroToSave.setGoal(loggedInUser.getGoal());
 
-        workoutRoutineRepository.save(wroToSave);
-
-        return "Successfully created a workout routine";
+        return workoutRoutineRepository.save(wroToSave);
     }
 
     @Override

@@ -2,12 +2,10 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.DayDTOConverter;
-import org.alx.fitnessapp.converter.WorkoutRoutineDTOConverter;
 import org.alx.fitnessapp.exception.DailyActivityException;
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.GenderEnum;
-import org.alx.fitnessapp.model.dto.WorkoutRoutineDTO;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
 import org.alx.fitnessapp.service.DayService;
@@ -15,6 +13,7 @@ import org.alx.fitnessapp.service.UserService;
 import org.alx.fitnessapp.service.WorkoutRoutineService;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,28 +22,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DayServiceImpl implements DayService {
     private final DayRepository dayRepository;
-    private final WorkoutRoutineDTOConverter workoutRoutineConverter;
     private final WorkoutRoutineService workoutRoutineService;
-    private final WorkoutRoutineRepository workoutRoutineRepository;
-    private final ExerciseStatsRepository exerciseStatsRepository;
-    private final ExerciseRepository exerciseRepository;
-    private final CategoryRepository categoryRepository;
     private final UserService userService;
+    private final DayDTOConverter converter;
 
-    // Kreirati dane za workout rutine koje se kreiraju automatski po datumu
     @Override
     public String autoCreateDay() {
         User loggedUser = userService.getLoggedUser();
-        List<WorkoutRoutine> workouts = workoutRoutineRepository.findAllByUserId(loggedUser.getId());
+        List<Day> days = new ArrayList<>();
+        List<WorkoutRoutine> workouts = workoutRoutineService.autoCreateWorkoutRoutine();
         try {
-            List<Day> days = new ArrayList<>();
             if (!workouts.isEmpty()) {
                 for (WorkoutRoutine workout : workouts) {
                     Day day = new Day();
                     day.setUser(loggedUser);
-                    day.setBmr(getBmr(dailyActivity(BMRCalculator(loggedUser), loggedUser), loggedUser.getGoal().getBodyTypeGoal()));
-                    day.setLoggedDate(LocalDate.now());
+                    double bmr = BMRCalculator(loggedUser);
+                    double bmrWithGoal = getBmr(dailyActivity(bmr, loggedUser), loggedUser.getGoal().getBodyTypeGoal());
+                    DecimalFormat format = new DecimalFormat("0.#");
+                    double formatted = Double.parseDouble(format.format(bmrWithGoal));
+
+                    day.setBmr(formatted);
                     day.setLoggedDate(workout.getDateStart());
+                    day.setWorkoutRoutine(workout);
                     days.add(day);
                 }
 
@@ -62,25 +61,39 @@ public class DayServiceImpl implements DayService {
         try {
             Day day = new Day();
             day.setUser(loggedUser);
-            day.setBmr(getBmr(dailyActivity(BMRCalculator(loggedUser), loggedUser), loggedUser.getGoal().getBodyTypeGoal()));
+
+            double bmr = BMRCalculator(loggedUser);
+            double bmrWithGoal = getBmr(dailyActivity(bmr, loggedUser), loggedUser.getGoal().getBodyTypeGoal());
+            DecimalFormat format = new DecimalFormat("0.#");
+            double formatted = Double.parseDouble(format.format(bmrWithGoal));
+
+            day.setBmr(formatted);
+
             day.setLoggedDate(LocalDate.now());
 
             if (dayDTO.getWorkoutRoutineDTO() != null) {
-
-                workoutRoutineService.createWorkoutRoutine(dayDTO.getWorkoutRoutineDTO());
-
-                // TBC
-//                wToSave.setExerciseStats(stats);
-
-//                workoutRoutineRepository.save(wToSave);
-
-//                day.setWorkoutRoutine(workoutRoutineRepository.save(wToSave));
+                WorkoutRoutine wro = workoutRoutineService.createWorkoutRoutine(dayDTO.getWorkoutRoutineDTO());
+                day.setWorkoutRoutine(wro);
             }
+
+            dayRepository.save(day);
 
             return "Successfully created a workout day!";
         } catch (DailyActivityException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<DayDTO> getDays() {
+        User loggedUser = userService.getLoggedUser();
+        List<Day> day = dayRepository.findAllByUserId(loggedUser.getId());
+
+        List<DayDTO> dtos = new ArrayList<>();
+        for (Day d : day) {
+            dtos.add(converter.convertDayToDayDTO(d));
+        }
+        return dtos;
     }
 
     private double BMRCalculator(User user) {
@@ -122,11 +135,11 @@ public class DayServiceImpl implements DayService {
 
     private double getBmr(double bmr, String goalEnum) {
         if (BodyTypeGoalEnum.LOSE_WEIGHT.name().equals(goalEnum)) {
-            return bmr - 500;
+            return bmr - 300;
         } else if (BodyTypeGoalEnum.MAINTAIN_WEIGHT.getValue().equals(goalEnum)) {
             return bmr;
         } else {
-            return bmr + 500;
+            return bmr + 300;
         }
     }
 
