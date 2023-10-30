@@ -3,6 +3,7 @@ package org.alx.fitnessapp.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.GoalDTOConverter;
 import org.alx.fitnessapp.converter.UserDTOConverter;
+import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.GoalDTO;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.Goal;
@@ -32,6 +33,16 @@ public class GoalServiceImpl implements GoalService {
         if (user.getGoal() == null) {
             Goal g = converter.convertGoalDTOToGoal(goalDTO);
 
+            if (g.getBodyTypeGoal().isEmpty()) {
+                if (g.getWeightGoal() > user.getWeight()) {
+                    g.setBodyTypeGoal(BodyTypeGoalEnum.GAIN_WEIGHT.name());
+                } else if (g.getWeightGoal() < user.getWeight()) {
+                    g.setBodyTypeGoal(BodyTypeGoalEnum.LOSE_WEIGHT.name());
+                } else {
+                    g.setBodyTypeGoal(BodyTypeGoalEnum.MAINTAIN_WEIGHT.name());
+                }
+            }
+
             goalRepository.save(g);
 
             user.setGoal(g);
@@ -41,9 +52,17 @@ public class GoalServiceImpl implements GoalService {
         } else {
             Goal g = user.getGoal();
 
+            if (g.getBodyTypeGoal().isEmpty()) {
+                if (g.getWeightGoal() > user.getWeight()) {
+                    g.setBodyTypeGoal(BodyTypeGoalEnum.GAIN_WEIGHT.name());
+                } else if (g.getWeightGoal() < user.getWeight()) {
+                    g.setBodyTypeGoal(BodyTypeGoalEnum.LOSE_WEIGHT.name());
+                } else {
+                    g.setBodyTypeGoal(BodyTypeGoalEnum.MAINTAIN_WEIGHT.name());
+                }
+            }
             g.setWeightGoal(goalDTO.getWeightGoal());
             g.setWeeklyExercise(goalDTO.getWeeklyExercise());
-            g.setBodyTypeGoal(goalDTO.getBodyTypeGoal());
 
             user.setGoal(g);
             userRepository.save(user);

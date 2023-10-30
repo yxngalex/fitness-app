@@ -2,6 +2,7 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.DayDTOConverter;
+import org.alx.fitnessapp.exception.BodyTypeGoalException;
 import org.alx.fitnessapp.exception.DailyActivityException;
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.DayDTO;
@@ -50,7 +51,7 @@ public class DayServiceImpl implements DayService {
                 dayRepository.saveAll(days);
             }
             return "Successfully created" + days.size() + " days!";
-        } catch (DailyActivityException e) {
+        } catch (DailyActivityException | BodyTypeGoalException e) {
             throw new RuntimeException(e);
         }
     }
@@ -79,7 +80,7 @@ public class DayServiceImpl implements DayService {
             dayRepository.save(day);
 
             return "Successfully created a workout day!";
-        } catch (DailyActivityException e) {
+        } catch (DailyActivityException | BodyTypeGoalException e) {
             throw new RuntimeException(e);
         }
     }
@@ -133,13 +134,15 @@ public class DayServiceImpl implements DayService {
             throw new DailyActivityException("User exercise needs to be at most 6 days per week");
     }
 
-    private double getBmr(double bmr, String goalEnum) {
+    private double getBmr(double bmr, String goalEnum) throws BodyTypeGoalException{
         if (BodyTypeGoalEnum.LOSE_WEIGHT.name().equals(goalEnum)) {
-            return bmr - 300;
-        } else if (BodyTypeGoalEnum.MAINTAIN_WEIGHT.getValue().equals(goalEnum)) {
+            return bmr - 500;
+        } else if (BodyTypeGoalEnum.MAINTAIN_WEIGHT.name().equals(goalEnum)) {
             return bmr;
-        } else {
+        } else if (BodyTypeGoalEnum.GAIN_WEIGHT.name().equals(goalEnum)){
             return bmr + 300;
+        } else {
+            throw new BodyTypeGoalException("Body type goal is invalid");
         }
     }
 
