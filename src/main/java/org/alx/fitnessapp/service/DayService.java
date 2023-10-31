@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DayService {
 
-    String autoCreateDay();
+    String autoCreateDay() throws Exception;
     String createDay(DayDTO dayDTO);
     List<DayDTO> getDays();
 }

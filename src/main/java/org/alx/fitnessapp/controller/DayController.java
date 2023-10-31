@@ -16,7 +16,11 @@ public class DayController {
 
     @PostMapping("/auto")
     public ResponseEntity<String> autoCreateDay() {
-        return ResponseEntity.ok(dayService.autoCreateDay());
+        try {
+            return ResponseEntity.ok(dayService.autoCreateDay());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/create")

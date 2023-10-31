@@ -22,9 +22,13 @@ public class WorkoutRoutineController {
     @PostMapping("/create/auto")
     public ResponseEntity<List<WorkoutRoutineDTO>> autoCreateWorkoutRoutine() {
         List<WorkoutRoutineDTO> convertedWors = new ArrayList<>();
-        for (WorkoutRoutine workoutRoutine : workoutRoutineService.autoCreateWorkoutRoutine()) {
-            WorkoutRoutineDTO wroDTO = converter.convertWorkoutRoutineToWorkoutRoutineDTO(workoutRoutine);
-            convertedWors.add(wroDTO);
+        try {
+            for (WorkoutRoutine workoutRoutine : workoutRoutineService.autoCreateWorkoutRoutine()) {
+                WorkoutRoutineDTO wroDTO = converter.convertWorkoutRoutineToWorkoutRoutineDTO(workoutRoutine);
+                convertedWors.add(wroDTO);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return ResponseEntity.ok(convertedWors);
     }

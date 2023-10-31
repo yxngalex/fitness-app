@@ -28,7 +28,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
 
 
     @Override
-    public List<WorkoutRoutine> autoCreateWorkoutRoutine() {
+    public List<WorkoutRoutine> autoCreateWorkoutRoutine() throws Exception {
         User loggedInUser = userService.getLoggedUser();
 
         if (loggedInUser.getGoal() != null) {
@@ -37,39 +37,45 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
                 List<WorkoutRoutine> savedRoutines = new ArrayList<>();
 
                 for (int i = 0; i < loggedInUser.getGoal().getWeeklyExercise(); i++) {
-                    WorkoutRoutine workoutRoutine = new WorkoutRoutine();
-                    workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
-                    workoutRoutine.setGoal(loggedInUser.getGoal());
-                    workoutRoutine.setCategory(categoriesForRoutine.get(i));
+                    if (!workoutRoutineRepository.existsByDateStart(LocalDate.now().plusDays(i))) {
+                        WorkoutRoutine workoutRoutine = new WorkoutRoutine();
+                        workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
+                        workoutRoutine.setGoal(loggedInUser.getGoal());
+                        workoutRoutine.setCategory(categoriesForRoutine.get(i));
 
-                    if (!categoriesForRoutine.get(i).getCategoryName().equals("BREAK")) {
-                        List<Exercise> exercises = exerciseService.getRandomExercisesByCategory(categoriesForRoutine.get(i).getCategoryName(), 5);
+                        if (!categoriesForRoutine.get(i).getCategoryName().equals("BREAK")) {
+                            List<Exercise> exercises = exerciseService.getRandomExercisesByCategory(categoriesForRoutine.get(i).getCategoryName(), 5);
 
-                        List<ExerciseStats> exerciseStats = saveExerciseStats(loggedInUser, exercises);
+                            List<ExerciseStats> exerciseStats = saveExerciseStats(loggedInUser, exercises);
 
-                        workoutRoutine.setExerciseStats(exerciseStats);
+                            workoutRoutine.setExerciseStats(exerciseStats);
+                        }
+                        workoutRoutineRepository.save(workoutRoutine);
+                        savedRoutines.add(workoutRoutine);
+                    } else {
+                        throw new Exception("Already created workouts for next " + loggedInUser.getGoal().getWeeklyExercise() + " days!");
                     }
-                    workoutRoutineRepository.save(workoutRoutine);
-                    savedRoutines.add(workoutRoutine);
                 }
                 return savedRoutines;
             } else if (loggedInUser.getGoal().getWeeklyExercise() < 3) {
                 Category mixedCategory = categoryService.getMixedCategory();
                 List<WorkoutRoutine> savedRoutines = new ArrayList<>();
                 for (int i = 0; i < loggedInUser.getGoal().getWeeklyExercise(); i++) {
-                    WorkoutRoutine workoutRoutine = new WorkoutRoutine();
-                    workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
-                    workoutRoutine.setGoal(loggedInUser.getGoal());
-                    workoutRoutine.setCategory(mixedCategory);
+                    if (!workoutRoutineRepository.existsByDateStart(LocalDate.now().plusDays(i))) {
+                        WorkoutRoutine workoutRoutine = new WorkoutRoutine();
+                        workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
+                        workoutRoutine.setGoal(loggedInUser.getGoal());
+                        workoutRoutine.setCategory(mixedCategory);
 
-                    List<Exercise> exercises = exerciseService.getRandomExercisesWithoutCategory();
+                        List<Exercise> exercises = exerciseService.getRandomExercisesWithoutCategory();
 
-                    List<ExerciseStats> exerciseStats = saveExerciseStats(loggedInUser, exercises);
+                        List<ExerciseStats> exerciseStats = saveExerciseStats(loggedInUser, exercises);
 
-                    workoutRoutine.setExerciseStats(exerciseStats);
+                        workoutRoutine.setExerciseStats(exerciseStats);
 
-                    workoutRoutineRepository.save(workoutRoutine);
-                    savedRoutines.add(workoutRoutine);
+                        workoutRoutineRepository.save(workoutRoutine);
+                        savedRoutines.add(workoutRoutine);
+                    }
                 }
                 return savedRoutines;
             }

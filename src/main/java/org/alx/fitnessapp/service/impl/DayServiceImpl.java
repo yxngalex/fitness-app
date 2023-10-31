@@ -28,29 +28,33 @@ public class DayServiceImpl implements DayService {
     private final DayDTOConverter converter;
 
     @Override
-    public String autoCreateDay() {
+    public String autoCreateDay() throws Exception {
         User loggedUser = userService.getLoggedUser();
         List<Day> days = new ArrayList<>();
         List<WorkoutRoutine> workouts = workoutRoutineService.autoCreateWorkoutRoutine();
         try {
             if (!workouts.isEmpty()) {
                 for (WorkoutRoutine workout : workouts) {
-                    Day day = new Day();
-                    day.setUser(loggedUser);
-                    double bmr = BMRCalculator(loggedUser);
-                    double bmrWithGoal = getBmr(dailyActivity(bmr, loggedUser), loggedUser.getGoal().getBodyTypeGoal());
-                    DecimalFormat format = new DecimalFormat("0.#");
-                    double formatted = Double.parseDouble(format.format(bmrWithGoal));
+                    if (!dayRepository.existsByUserIdAndLoggedDate(loggedUser.getId(), workout.getDateStart())) {
+                        Day day = new Day();
+                        day.setUser(loggedUser);
+                        double bmr = BMRCalculator(loggedUser);
+                        double bmrWithGoal = getBmr(dailyActivity(bmr, loggedUser), loggedUser.getGoal().getBodyTypeGoal());
+                        DecimalFormat format = new DecimalFormat("0.#");
+                        double formatted = Double.parseDouble(format.format(bmrWithGoal));
 
-                    day.setBmr(formatted);
-                    day.setLoggedDate(workout.getDateStart());
-                    day.setWorkoutRoutine(workout);
-                    days.add(day);
+                        day.setBmr(formatted);
+                        day.setLoggedDate(workout.getDateStart());
+                        day.setWorkoutRoutine(workout);
+                        days.add(day);
+                    } else {
+                        throw new Exception("Days already exist!");
+                    }
                 }
 
                 dayRepository.saveAll(days);
             }
-            return "Successfully created" + days.size() + " days!";
+            return  days.size() + " days created!";
         } catch (DailyActivityException | BodyTypeGoalException e) {
             throw new RuntimeException(e);
         }
@@ -134,12 +138,12 @@ public class DayServiceImpl implements DayService {
             throw new DailyActivityException("User exercise needs to be at most 6 days per week");
     }
 
-    private double getBmr(double bmr, String goalEnum) throws BodyTypeGoalException{
+    private double getBmr(double bmr, String goalEnum) throws BodyTypeGoalException {
         if (BodyTypeGoalEnum.LOSE_WEIGHT.name().equals(goalEnum)) {
             return bmr - 500;
         } else if (BodyTypeGoalEnum.MAINTAIN_WEIGHT.name().equals(goalEnum)) {
             return bmr;
-        } else if (BodyTypeGoalEnum.GAIN_WEIGHT.name().equals(goalEnum)){
+        } else if (BodyTypeGoalEnum.GAIN_WEIGHT.name().equals(goalEnum)) {
             return bmr + 300;
         } else {
             throw new BodyTypeGoalException("Body type goal is invalid");

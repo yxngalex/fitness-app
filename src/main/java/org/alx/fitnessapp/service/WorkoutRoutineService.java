@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface WorkoutRoutineService {
 
-    List<WorkoutRoutine> autoCreateWorkoutRoutine();
+    List<WorkoutRoutine> autoCreateWorkoutRoutine() throws Exception;
 
     WorkoutRoutine createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
 
