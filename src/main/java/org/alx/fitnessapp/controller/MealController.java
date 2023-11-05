@@ -18,7 +18,7 @@ public class MealController {
     @PostMapping("/create")
     public ResponseEntity<String> createMeal(@RequestBody MealDTO mealDTO) {
         try {
-            return ResponseEntity.ok(mealService.createMeal(mealDTO));
+            return ResponseEntity.ok(mealService.createOrUpdateMeal(mealDTO));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

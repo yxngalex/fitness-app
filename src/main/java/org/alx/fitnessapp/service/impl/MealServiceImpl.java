@@ -31,9 +31,9 @@ public class MealServiceImpl implements MealService {
 
     // Create meal with foods also count nutrition per meal and finally set nutrition in day with all meals
     @Override
-    public String createMeal(MealDTO dto) throws Exception {
+    public String createOrUpdateMeal(MealDTO dto) throws Exception {
         User loggedUser = userService.getLoggedUser();
-        Meal existingMeal = mealRepository.findMealByMealName(dto.getMealName());
+        Meal existingMeal = mealRepository.findMealByMealName(dto.getMealName(), loggedUser.getUsername());
         Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dto.getDayDTO().getLoggedDate());
 
         if (existingMeal == null) {
@@ -61,19 +61,19 @@ public class MealServiceImpl implements MealService {
             }
             return meal.getMealName() + " saved!";
         } else {
-            List<Food> foods = new ArrayList<>();
+            List<Food> existingFoods = foodRepository.findAllByMealListId(existingMeal.getId());
             if (!dto.getFoodList().isEmpty()) {
                 for (FoodDTO foodDTO : dto.getFoodList()) {
                     Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
-                    foods.add(f);
+                    existingFoods.add(f);
                 }
             } else {
-                throw new Exception("Food list can't be empty!");
+                throw new Exception("Food list mustn't be empty!");
             }
             if (day != null) {
                 existingMeal.setDay(day);
                 existingMeal.setMealName(dto.getMealName());
-                existingMeal.setFoodList(foods);
+                existingMeal.setFoodList(existingFoods);
                 existingMeal.setNutrition(countNutritionPerMeal(dto));
 
                 mealRepository.save(existingMeal);
