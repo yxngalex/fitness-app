@@ -7,7 +7,4 @@ public interface GoalService {
     String createOrUpdateGoal(GoalDTO goalDTO);
 
     GoalDTO getGoal();
-
-    String deleteGoal(Integer goalId);
-
 }

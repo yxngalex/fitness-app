@@ -75,12 +75,4 @@ public class GoalServiceImpl implements GoalService {
         User loggedUser = userService.getLoggedUser();
         return converter.convertGoalToGoalDTO(loggedUser.getGoal());
     }
-
-    @Override
-    public String deleteGoal(Integer goalId) {
-        goalRepository.deleteById(goalId);
-
-        return "Goal Deleted Successfully";
-    }
-
 }

@@ -26,6 +26,9 @@ public class DayServiceImpl implements DayService {
     private final WorkoutRoutineService workoutRoutineService;
     private final UserService userService;
     private final DayDTOConverter converter;
+    private final WorkoutRoutineRepository workoutRoutineRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final ExerciseStatsRepository exerciseStatsRepository;
 
     @Override
     public String autoCreateDay() throws Exception {
@@ -54,7 +57,7 @@ public class DayServiceImpl implements DayService {
 
                 dayRepository.saveAll(days);
             }
-            return  days.size() + " days created!";
+            return days.size() + " days created!";
         } catch (DailyActivityException | BodyTypeGoalException e) {
             throw new RuntimeException(e);
         }
@@ -99,6 +102,23 @@ public class DayServiceImpl implements DayService {
             dtos.add(converter.convertDayToDayDTO(d));
         }
         return dtos;
+    }
+
+    @Override
+    public String deleteDay(DayDTO dayDTO) {
+        User loogedUser = userService.getLoggedUser();
+        Day day = dayRepository.findDayByUserIdAndLoggedDate(loogedUser.getId(), dayDTO.getLoggedDate());
+        if (day != null) {
+            LocalDate date = day.getLoggedDate();
+
+            WorkoutRoutine wro = day.getWorkoutRoutine();
+
+            dayRepository.delete(day);
+            exerciseStatsRepository.deleteAll(wro.getExerciseStats());
+            workoutRoutineRepository.delete(wro);
+            return "Deleted " + date;
+        }
+        return "Day, you're trying to delete, doesn't exist";
     }
 
     private double BMRCalculator(User user) {

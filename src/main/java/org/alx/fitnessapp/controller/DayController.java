@@ -32,4 +32,9 @@ public class DayController {
     public ResponseEntity<List<DayDTO>> getDaysForUser() {
         return ResponseEntity.ok(dayService.getDays());
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteDay(@RequestBody DayDTO dayDTO) {
+        return ResponseEntity.ok(dayService.deleteDay(dayDTO));
+    }
 }

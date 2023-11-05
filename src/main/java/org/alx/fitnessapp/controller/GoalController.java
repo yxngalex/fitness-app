@@ -22,9 +22,4 @@ public class GoalController {
     public ResponseEntity<GoalDTO> getGoal() {
         return ResponseEntity.ok(goalService.getGoal());
     }
-
-    @PostMapping("/delete/{goalId}")
-    public ResponseEntity<String> deleteGoal(@PathVariable Integer goalId) {
-        return ResponseEntity.ok(goalService.deleteGoal(goalId));
-    }
 }
