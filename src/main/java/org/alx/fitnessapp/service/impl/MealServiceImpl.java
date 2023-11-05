@@ -33,55 +33,99 @@ public class MealServiceImpl implements MealService {
     @Override
     public String createMeal(MealDTO dto) throws Exception {
         User loggedUser = userService.getLoggedUser();
-
+        Meal existingMeal = mealRepository.findMealByMealName(dto.getMealName());
         Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dto.getDayDTO().getLoggedDate());
-        List<Food> foods = new ArrayList<>();
 
-        if (!dto.getFoodList().isEmpty()) {
-            for (FoodDTO foodDTO : dto.getFoodList()) {
-                Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
-                foods.add(f);
+        if (existingMeal == null) {
+            List<Food> foods = new ArrayList<>();
+
+            if (!dto.getFoodList().isEmpty()) {
+                for (FoodDTO foodDTO : dto.getFoodList()) {
+                    Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
+                    foods.add(f);
+                }
+            } else {
+                throw new Exception("Food list can't be empty!");
             }
+
+            Meal meal = new Meal();
+            if (day != null) {
+                meal.setDay(day);
+                meal.setMealName(dto.getMealName());
+                meal.setFoodList(foods);
+                meal.setNutrition(countNutritionPerMeal(dto));
+
+                mealRepository.save(meal);
+            } else {
+                throw new Exception("Day must exist");
+            }
+            return meal.getMealName() + " saved!";
         } else {
-            throw new Exception("Food list can't be empty!");
+            List<Food> foods = new ArrayList<>();
+            if (!dto.getFoodList().isEmpty()) {
+                for (FoodDTO foodDTO : dto.getFoodList()) {
+                    Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
+                    foods.add(f);
+                }
+            } else {
+                throw new Exception("Food list can't be empty!");
+            }
+            if (day != null) {
+                existingMeal.setDay(day);
+                existingMeal.setMealName(dto.getMealName());
+                existingMeal.setFoodList(foods);
+                existingMeal.setNutrition(countNutritionPerMeal(dto));
+
+                mealRepository.save(existingMeal);
+
+                return existingMeal.getMealName() + " updated!";
+            } else {
+                throw new Exception("Day must exist");
+            }
         }
-
-        Meal meal = new Meal();
-        if (day != null) {
-            meal.setDay(day);
-            meal.setMealName(dto.getMealName());
-            meal.setFoodList(foods);
-            meal.setNutrition(countNutritionPerMeal(dto.getFoodList()));
-
-            mealRepository.save(meal);
-        } else {
-            throw new Exception("Day must exist");
-        }
-
-        return meal.getMealName() != null ? meal.getMealName() + " saved!" : "Error while creating a meal!";
     }
 
-    private Nutrition countNutritionPerMeal(List<FoodDTO> foods) {
-        Nutrition newNutrition = new Nutrition();
+    private Nutrition countNutritionPerMeal(MealDTO dto) {
+        Nutrition existingNutrition = nutritionRepository.findNutritionForMeal(dto.getMealName());
 
-        double calories = 0.0;
-        double protein = 0.0;
-        double carbs = 0.0;
-        double fat = 0.0;
+        if (existingNutrition != null) {
+            double calories = existingNutrition.getCalories();
+            double protein = existingNutrition.getProtein();
+            double carbs = existingNutrition.getCarbs();
+            double fat = existingNutrition.getFat();
 
-        for (FoodDTO food : foods) {
-            calories += food.getNutritionDTO().getCalories() * food.getServing();
-            protein += food.getNutritionDTO().getProtein() * food.getServing();
-            carbs += food.getNutritionDTO().getCarbs() * food.getServing();
-            fat += food.getNutritionDTO().getFat() * food.getServing();
+            for (FoodDTO food : dto.getFoodList()) {
+                calories += food.getNutritionDTO().getCalories() * food.getServing();
+                protein += food.getNutritionDTO().getProtein() * food.getServing();
+                carbs += food.getNutritionDTO().getCarbs() * food.getServing();
+                fat += food.getNutritionDTO().getFat() * food.getServing();
+            }
+
+            existingNutrition.setCalories(calories);
+            existingNutrition.setProtein(protein);
+            existingNutrition.setCarbs(carbs);
+            existingNutrition.setFat(fat);
+            return nutritionRepository.save(existingNutrition);
+        } else {
+            Nutrition newNutrition = new Nutrition();
+            double calories = 0.0;
+            double protein = 0.0;
+            double carbs = 0.0;
+            double fat = 0.0;
+
+            for (FoodDTO food : dto.getFoodList()) {
+                calories += food.getNutritionDTO().getCalories() * food.getServing();
+                protein += food.getNutritionDTO().getProtein() * food.getServing();
+                carbs += food.getNutritionDTO().getCarbs() * food.getServing();
+                fat += food.getNutritionDTO().getFat() * food.getServing();
+            }
+
+            newNutrition.setCalories(calories);
+            newNutrition.setProtein(protein);
+            newNutrition.setCarbs(carbs);
+            newNutrition.setFat(fat);
+            return nutritionRepository.save(newNutrition);
         }
-
-        newNutrition.setCalories(calories);
-        newNutrition.setProtein(protein);
-        newNutrition.setCarbs(carbs);
-        newNutrition.setFat(fat);
-
-        return nutritionRepository.save(newNutrition);
     }
 
 }
