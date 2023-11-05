@@ -51,7 +51,7 @@ public class MealServiceImpl implements MealService {
             meal.setDay(day);
             meal.setMealName(dto.getMealName());
             meal.setFoodList(foods);
-            meal.setNutrition(countNutritionPerMeal(foods));
+            meal.setNutrition(countNutritionPerMeal(dto.getFoodList()));
 
             mealRepository.save(meal);
         } else {
@@ -61,7 +61,7 @@ public class MealServiceImpl implements MealService {
         return meal.getMealName() != null ? meal.getMealName() + " saved!" : "Error while creating a meal!";
     }
 
-    private Nutrition countNutritionPerMeal(List<Food> foods) {
+    private Nutrition countNutritionPerMeal(List<FoodDTO> foods) {
         Nutrition newNutrition = new Nutrition();
 
         double calories = 0.0;
@@ -69,16 +69,16 @@ public class MealServiceImpl implements MealService {
         double carbs = 0.0;
         double fat = 0.0;
 
-        for (Food food : foods) {
-            calories += food.getNutrition().getCalories() * food.getServing();
-            protein += food.getNutrition().getProtein() * food.getServing();
-            carbs += food.getNutrition().getCarbs() * food.getServing();
-            fat += food.getNutrition().getFat() * food.getServing();
+        for (FoodDTO food : foods) {
+            calories += food.getNutritionDTO().getCalories() * food.getServing();
+            protein += food.getNutritionDTO().getProtein() * food.getServing();
+            carbs += food.getNutritionDTO().getCarbs() * food.getServing();
+            fat += food.getNutritionDTO().getFat() * food.getServing();
         }
 
         newNutrition.setCalories(calories);
         newNutrition.setProtein(protein);
-        newNutrition.setCalories(carbs);
+        newNutrition.setCarbs(carbs);
         newNutrition.setFat(fat);
 
         return nutritionRepository.save(newNutrition);
