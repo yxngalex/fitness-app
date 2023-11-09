@@ -1,6 +1,8 @@
 package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.alx.fitnessapp.converter.MealDTOConverter;
+import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.FoodDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
 import org.alx.fitnessapp.model.entity.*;
@@ -23,6 +25,7 @@ public class MealServiceImpl implements MealService {
     private final DayRepository dayRepository;
     private final FoodRepository foodRepository;
     private final NutritionRepository nutritionRepository;
+    private final MealDTOConverter mealDTOConverter;
 
     @Override
     public String createOrUpdateMeal(MealDTO dto) throws Exception {
@@ -46,7 +49,7 @@ public class MealServiceImpl implements MealService {
 
             Meal meal = new Meal();
             if (day != null) {
-                Nutrition nutritionPerMeal = countNutritionPerMeal(dto);
+                Nutrition nutritionPerMeal = countNutritionPerMeal(dto, loggedUser.getUsername());
 
                 meal.setDay(day);
                 meal.setMealName(dto.getMealName());
@@ -86,7 +89,7 @@ public class MealServiceImpl implements MealService {
                 throw new Exception("Food list mustn't be empty!");
             }
             if (day != null) {
-                Nutrition nutritionPerMeal = countNutritionPerMeal(dto);
+                Nutrition nutritionPerMeal = countNutritionPerMeal(dto, loggedUser.getUsername());
 
                 existingMeal.setDay(day);
                 existingMeal.setMealName(dto.getMealName());
@@ -127,8 +130,54 @@ public class MealServiceImpl implements MealService {
         return mealName + " deleted";
     }
 
-    private Nutrition countNutritionPerMeal(MealDTO dto) {
-        Nutrition existingNutrition = nutritionRepository.findNutritionForMeal(dto.getMealName());
+    @Override
+    public String removeFoodFromMeal(MealDTO mealDTO) {
+        User loggedUser = userService.getLoggedUser();
+        Meal findExistingMeal = mealRepository.findMealByMealName(mealDTO.getMealName(), loggedUser.getUsername());
+
+        List<Food> foodsInMeal = findExistingMeal.getFoodList();
+
+        Food food = foodRepository.findFoodByFoodName(mealDTO.getFoodList().get(0).getFoodName());
+        Nutrition foodNutrition = food.getNutrition();
+        Nutrition mealNutrition = findExistingMeal.getNutrition();
+        Nutrition dayNutrition = nutritionRepository.findNutritionForDay(findExistingMeal.getDay());
+
+        mealNutrition.setProtein(mealNutrition.getProtein() - foodNutrition.getProtein());
+        mealNutrition.setCarbs(mealNutrition.getCarbs() - foodNutrition.getCarbs());
+        mealNutrition.setCalories(mealNutrition.getCalories() - foodNutrition.getCalories());
+        mealNutrition.setFat(mealNutrition.getFat() - foodNutrition.getFat());
+
+        nutritionRepository.save(mealNutrition);
+
+        dayNutrition.setProtein(dayNutrition.getProtein() - foodNutrition.getProtein());
+        dayNutrition.setCarbs(dayNutrition.getCarbs() - foodNutrition.getCarbs());
+        dayNutrition.setCalories(dayNutrition.getCalories() - foodNutrition.getCalories());
+        dayNutrition.setFat(dayNutrition.getFat() - foodNutrition.getFat());
+
+        nutritionRepository.save(dayNutrition);
+
+        foodsInMeal.remove(food);
+
+        findExistingMeal.setFoodList(foodsInMeal);
+
+        mealRepository.save(findExistingMeal);
+
+
+        return food.getFoodName() + " removed from " + findExistingMeal.getMealName();
+    }
+    @Override
+    public MealDTO getMealByDay(DayDTO dayDTO) {
+        User loggedUser = userService.getLoggedUser();
+
+        Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dayDTO.getLoggedDate());
+
+        Meal findExistingMeal = mealRepository.findMealByDay(day);
+
+        return mealDTOConverter.convertMealToMealDTO(findExistingMeal);
+    }
+
+    private Nutrition countNutritionPerMeal(MealDTO dto, String username) {
+        Nutrition existingNutrition = nutritionRepository.findNutritionForMeal(dto.getMealName(), username);
 
         if (existingNutrition != null) {
             double calories = existingNutrition.getCalories();

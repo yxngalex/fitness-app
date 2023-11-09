@@ -1,13 +1,12 @@
 package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.alx.fitnessapp.model.dto.DayDTO;
+import org.alx.fitnessapp.model.dto.FoodDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
 import org.alx.fitnessapp.service.MealService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/meal")
@@ -22,5 +21,15 @@ public class MealController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostMapping("/remove")
+    public ResponseEntity<String> removeFoodFromMeal(@RequestBody MealDTO mealDTO) {
+        return ResponseEntity.ok(mealService.removeFoodFromMeal(mealDTO));
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<MealDTO> getMealByDay(@RequestBody DayDTO dayDTO) {
+        return ResponseEntity.ok(mealService.getMealByDay(dayDTO));
     }
 }

@@ -9,6 +9,5 @@ public interface DayService {
     String autoCreateDay() throws Exception;
     String createDay(DayDTO dayDTO);
     List<DayDTO> getDays();
-
     String deleteDay(DayDTO dayDTO);
 }
