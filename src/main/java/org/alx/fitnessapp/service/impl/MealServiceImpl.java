@@ -1,8 +1,6 @@
 package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.alx.fitnessapp.converter.MealDTOConverter;
-import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.FoodDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
 import org.alx.fitnessapp.model.entity.*;
@@ -10,7 +8,6 @@ import org.alx.fitnessapp.repository.DayRepository;
 import org.alx.fitnessapp.repository.FoodRepository;
 import org.alx.fitnessapp.repository.MealRepository;
 import org.alx.fitnessapp.repository.NutritionRepository;
-import org.alx.fitnessapp.service.DayService;
 import org.alx.fitnessapp.service.MealService;
 import org.alx.fitnessapp.service.UserService;
 import org.springframework.stereotype.Service;
@@ -22,14 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MealServiceImpl implements MealService {
     private final MealRepository mealRepository;
-    private final MealDTOConverter converter;
     private final UserService userService;
-    private final DayService dayService;
     private final DayRepository dayRepository;
     private final FoodRepository foodRepository;
     private final NutritionRepository nutritionRepository;
 
-    // Create meal with foods also count nutrition per meal and finally set nutrition in day with all meals
     @Override
     public String createOrUpdateMeal(MealDTO dto) throws Exception {
         User loggedUser = userService.getLoggedUser();
@@ -41,8 +35,10 @@ public class MealServiceImpl implements MealService {
 
             if (!dto.getFoodList().isEmpty()) {
                 for (FoodDTO foodDTO : dto.getFoodList()) {
-                    Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
-                    foods.add(f);
+                    for (int i = 0; i < foodDTO.getServing(); i++) {
+                        Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
+                        foods.add(f);
+                    }
                 }
             } else {
                 throw new Exception("Food list can't be empty!");
@@ -50,39 +46,85 @@ public class MealServiceImpl implements MealService {
 
             Meal meal = new Meal();
             if (day != null) {
+                Nutrition nutritionPerMeal = countNutritionPerMeal(dto);
+
                 meal.setDay(day);
                 meal.setMealName(dto.getMealName());
                 meal.setFoodList(foods);
-                meal.setNutrition(countNutritionPerMeal(dto));
+                meal.setNutrition(nutritionPerMeal);
 
                 mealRepository.save(meal);
+
+                if (day.getNutrition() != null) {
+                    day.setNutrition(nutritionRepository.save(countNutritionPerDay(day, dto)));
+                } else {
+                    Nutrition nutritionForDay = new Nutrition();
+                    nutritionForDay.setProtein(nutritionPerMeal.getProtein());
+                    nutritionForDay.setFat(nutritionPerMeal.getFat());
+                    nutritionForDay.setCarbs(nutritionPerMeal.getCarbs());
+                    nutritionForDay.setCalories(nutritionPerMeal.getCalories());
+
+                    day.setNutrition(nutritionRepository.save(nutritionForDay));
+                }
+
+                dayRepository.save(day);
+
+                return meal.getMealName() + " saved!";
             } else {
                 throw new Exception("Day must exist");
             }
-            return meal.getMealName() + " saved!";
         } else {
             List<Food> existingFoods = foodRepository.findAllByMealListId(existingMeal.getId());
             if (!dto.getFoodList().isEmpty()) {
                 for (FoodDTO foodDTO : dto.getFoodList()) {
-                    Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
-                    existingFoods.add(f);
+                    for (int i = 0; i < foodDTO.getServing(); i++) {
+                        Food f = foodRepository.findFoodByFoodName(foodDTO.getFoodName());
+                        existingFoods.add(f);
+                    }
                 }
             } else {
                 throw new Exception("Food list mustn't be empty!");
             }
             if (day != null) {
+                Nutrition nutritionPerMeal = countNutritionPerMeal(dto);
+
                 existingMeal.setDay(day);
                 existingMeal.setMealName(dto.getMealName());
                 existingMeal.setFoodList(existingFoods);
-                existingMeal.setNutrition(countNutritionPerMeal(dto));
+                existingMeal.setNutrition(nutritionPerMeal);
 
                 mealRepository.save(existingMeal);
+
+                if (day.getNutrition() != null) {
+                    day.setNutrition(nutritionRepository.save(countNutritionPerDay(day, dto)));
+                } else {
+                    Nutrition nutritionForDay = new Nutrition();
+                    nutritionForDay.setProtein(nutritionPerMeal.getProtein());
+                    nutritionForDay.setFat(nutritionPerMeal.getFat());
+                    nutritionForDay.setCarbs(nutritionPerMeal.getCarbs());
+                    nutritionForDay.setCalories(nutritionPerMeal.getCalories());
+
+                    day.setNutrition(nutritionRepository.save(nutritionForDay));
+                }
+
+                dayRepository.save(day);
 
                 return existingMeal.getMealName() + " updated!";
             } else {
                 throw new Exception("Day must exist");
             }
         }
+    }
+
+    @Override
+    public String deleteMealPlan(MealDTO dto) {
+        User loggedUser = userService.getLoggedUser();
+        Meal meal = mealRepository.findMealByMealName(dto.getMealName(), loggedUser.getUsername());
+        String mealName = meal.getMealName();
+
+        mealRepository.delete(meal);
+
+        return mealName + " deleted";
     }
 
     private Nutrition countNutritionPerMeal(MealDTO dto) {
@@ -126,6 +168,30 @@ public class MealServiceImpl implements MealService {
             newNutrition.setFat(fat);
             return nutritionRepository.save(newNutrition);
         }
+    }
+
+    private Nutrition countNutritionPerDay(Day day, MealDTO dto) {
+        Nutrition dayNutrition = day.getNutrition();
+
+        for (FoodDTO foodDTO : dto.getFoodList()) {
+            double calories = 0.0;
+            double protein = 0.0;
+            double carbs = 0.0;
+            double fat = 0.0;
+
+            for (int i = 0; i < foodDTO.getServing(); i++) {
+                calories += foodDTO.getNutritionDTO().getCalories();
+                protein += foodDTO.getNutritionDTO().getProtein();
+                fat += foodDTO.getNutritionDTO().getFat();
+                carbs += foodDTO.getNutritionDTO().getCarbs();
+            }
+            dayNutrition.setCalories(dayNutrition.getCalories() + calories);
+            dayNutrition.setProtein(dayNutrition.getProtein() + protein);
+            dayNutrition.setFat(dayNutrition.getFat() + fat);
+            dayNutrition.setCarbs(dayNutrition.getCarbs() + carbs);
+        }
+
+        return dayNutrition;
     }
 
 }

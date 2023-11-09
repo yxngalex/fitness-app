@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NutritionRepository extends JpaRepository<Nutrition, Integer> {
 
-    @Query("SELECT n FROM Meal m JOIN Nutrition n ON m.nutrition.id = n.id")
+    @Query("SELECT n FROM Meal m JOIN Nutrition n ON m.nutrition.id = n.id WHERE m.mealName = :mealName")
     Nutrition findNutritionForMeal(@Param("mealName") String mealName);
 }
