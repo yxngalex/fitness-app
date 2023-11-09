@@ -1,12 +1,14 @@
 package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.alx.fitnessapp.exception.UserAlreadyExistsExceptionAbstract;
+import org.alx.fitnessapp.exception.InvalidAgeValidationException;
+import org.alx.fitnessapp.exception.InvalidEmailValidationException;
+import org.alx.fitnessapp.exception.UserAlreadyExistsException;
 import org.alx.fitnessapp.model.dto.LoginResponse;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.security.TokenProvider;
 import org.alx.fitnessapp.service.UserService;
-import org.springframework.http.HttpStatus;
+import org.alx.fitnessapp.validation.Validator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,9 +30,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserDTO userDTO) {
+        if (!Validator.isEmailValid(userDTO.getEmail())) {
+            throw new InvalidEmailValidationException("Invalid Email!");
+        }
+        if (!Validator.isAgeValid(userDTO.getAge())) {
+            throw new InvalidAgeValidationException("You need to be at least 18 years old!");
+        }
         try {
-            return new ResponseEntity<>(userService.registerUser(userDTO), HttpStatus.OK);
-        } catch (UserAlreadyExistsExceptionAbstract e) {
+            return ResponseEntity.ok(userService.registerUser(userDTO));
+        } catch (UserAlreadyExistsException e) {
             throw new RuntimeException(e);
         }
     }
@@ -43,6 +51,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = tokenProvider.generateToken(authentication);
 
-        return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }

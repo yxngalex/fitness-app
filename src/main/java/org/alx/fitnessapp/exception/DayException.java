@@ -2,10 +2,10 @@ package org.alx.fitnessapp.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class UserAlreadyExistsExceptionAbstract extends AbstractFitnessException {
+public class DayException extends AbstractFitnessException {
 
-    public UserAlreadyExistsExceptionAbstract(String message) {
-        super(message);
+    public DayException(String msg) {
+        super(msg);
     }
 
     @Override

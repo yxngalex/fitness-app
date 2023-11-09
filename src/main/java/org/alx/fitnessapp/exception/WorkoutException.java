@@ -2,8 +2,9 @@ package org.alx.fitnessapp.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class InvalidAgeValidationExceptionAbstract extends AbstractFitnessException {
-    public InvalidAgeValidationExceptionAbstract(String msg) {
+public class WorkoutException extends AbstractFitnessException {
+
+    public WorkoutException(String msg) {
         super(msg);
     }
 

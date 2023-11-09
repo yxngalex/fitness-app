@@ -1,8 +1,8 @@
 package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.alx.fitnessapp.exception.DayExceptionAbstract;
-import org.alx.fitnessapp.exception.WorkoutExceptionAbstract;
+import org.alx.fitnessapp.exception.DayException;
+import org.alx.fitnessapp.exception.WorkoutException;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.service.DayService;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class DayController {
     public ResponseEntity<String> autoCreateDay() {
         try {
             return ResponseEntity.ok(dayService.autoCreateDay());
-        } catch (WorkoutExceptionAbstract | DayExceptionAbstract e) {
+        } catch (WorkoutException | DayException e) {
             throw new RuntimeException(e);
         }
     }

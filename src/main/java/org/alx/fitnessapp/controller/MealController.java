@@ -1,8 +1,8 @@
 package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.alx.fitnessapp.exception.DayExceptionAbstract;
-import org.alx.fitnessapp.exception.MealCreationExceptionAbstract;
+import org.alx.fitnessapp.exception.DayException;
+import org.alx.fitnessapp.exception.MealCreationException;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
 import org.alx.fitnessapp.service.MealService;
@@ -19,7 +19,7 @@ public class MealController {
     public ResponseEntity<String> createMeal(@RequestBody MealDTO mealDTO) {
         try {
             return ResponseEntity.ok(mealService.createOrUpdateMeal(mealDTO));
-        } catch (MealCreationExceptionAbstract | DayExceptionAbstract e) {
+        } catch (MealCreationException | DayException e) {
             throw new RuntimeException(e);
         }
     }

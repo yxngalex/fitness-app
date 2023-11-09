@@ -2,8 +2,8 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.MealDTOConverter;
-import org.alx.fitnessapp.exception.DayExceptionAbstract;
-import org.alx.fitnessapp.exception.MealCreationExceptionAbstract;
+import org.alx.fitnessapp.exception.DayException;
+import org.alx.fitnessapp.exception.MealCreationException;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.FoodDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
@@ -30,7 +30,7 @@ public class MealServiceImpl implements MealService {
     private final MealDTOConverter mealDTOConverter;
 
     @Override
-    public String createOrUpdateMeal(MealDTO dto) throws MealCreationExceptionAbstract {
+    public String createOrUpdateMeal(MealDTO dto) throws MealCreationException {
         User loggedUser = userService.getLoggedUser();
         Meal existingMeal = mealRepository.findMealByMealName(dto.getMealName(), loggedUser.getUsername());
         Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dto.getDayDTO().getLoggedDate());
@@ -46,7 +46,7 @@ public class MealServiceImpl implements MealService {
                     }
                 }
             } else {
-                throw new MealCreationExceptionAbstract("Food list can't be empty!");
+                throw new MealCreationException("Food list can't be empty!");
             }
 
             Meal meal = new Meal();
@@ -76,7 +76,7 @@ public class MealServiceImpl implements MealService {
 
                 return meal.getMealName() + " saved!";
             } else {
-                throw new DayExceptionAbstract("Day must exist");
+                throw new DayException("Day must exist");
             }
         } else {
             List<Food> existingFoods = foodRepository.findAllByMealListId(existingMeal.getId());
@@ -88,7 +88,7 @@ public class MealServiceImpl implements MealService {
                     }
                 }
             } else {
-                throw new MealCreationExceptionAbstract("Food list mustn't be empty!");
+                throw new MealCreationException("Food list mustn't be empty!");
             }
             if (day != null) {
                 Nutrition nutritionPerMeal = countNutritionPerMeal(dto, loggedUser.getUsername());
@@ -116,7 +116,7 @@ public class MealServiceImpl implements MealService {
 
                 return existingMeal.getMealName() + " updated!";
             } else {
-                throw new DayExceptionAbstract("Day must exist");
+                throw new DayException("Day must exist");
             }
         }
     }

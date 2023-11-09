@@ -2,8 +2,9 @@ package org.alx.fitnessapp.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class InvalidBodyTypeGoalExceptionAbstract extends AbstractFitnessException {
-    public InvalidBodyTypeGoalExceptionAbstract(String msg) {
+public class InvalidEmailValidationException extends AbstractFitnessException {
+
+    public InvalidEmailValidationException(String msg) {
         super(msg);
     }
 

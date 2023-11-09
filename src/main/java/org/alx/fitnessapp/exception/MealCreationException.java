@@ -2,9 +2,9 @@ package org.alx.fitnessapp.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class WorkoutExceptionAbstract extends AbstractFitnessException {
+public class MealCreationException extends AbstractFitnessException {
 
-    public WorkoutExceptionAbstract(String msg) {
+    public MealCreationException(String msg) {
         super(msg);
     }
 

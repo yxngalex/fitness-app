@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.alx.fitnessapp.converter.GoalDTOConverter;
 import org.alx.fitnessapp.converter.UserDTOConverter;
-import org.alx.fitnessapp.exception.InvalidAgeValidationExceptionAbstract;
-import org.alx.fitnessapp.exception.InvalidEmailValidationExceptionAbstract;
-import org.alx.fitnessapp.exception.UserAlreadyExistsExceptionAbstract;
+import org.alx.fitnessapp.exception.InvalidAgeValidationException;
+import org.alx.fitnessapp.exception.InvalidEmailValidationException;
+import org.alx.fitnessapp.exception.UserAlreadyExistsException;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.Goal;
 import org.alx.fitnessapp.model.entity.User;
@@ -34,37 +34,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String registerUser(UserDTO userDTO) throws UserAlreadyExistsExceptionAbstract {
+    public String registerUser(UserDTO userDTO) throws UserAlreadyExistsException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new UserAlreadyExistsExceptionAbstract("User already exists!");
+            throw new UserAlreadyExistsException("Username already exists!");
         }
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new UserAlreadyExistsExceptionAbstract("Account with this email already exists");
+            throw new UserAlreadyExistsException("Account with this email already exists");
         }
 
-        try {
-            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-            User user;
+        User user;
 
-            Goal goal = goalConverter.convertGoalDTOToGoal(userDTO.getGoal());
+        Goal goal = goalConverter.convertGoalDTOToGoal(userDTO.getGoal());
 
-            if (goal != null)
-                goalRepository.save(goal);
+        if (goal != null)
+            goalRepository.save(goal);
 
-            if (Validator.isEmailValid(userDTO.getEmail()) && Validator.isAgeValid(userDTO.getAge())) {
-                user = userConverter.convertUserDTOToUser(userDTO);
+        user = userConverter.convertUserDTOToUser(userDTO);
 
-                user.setIsDeleted(false);
-                user.setGoal(goal);
+        user.setIsDeleted(false);
+        user.setGoal(goal);
 
-                userRepository.save(user);
-            }
-        } catch (InvalidEmailValidationExceptionAbstract | InvalidAgeValidationExceptionAbstract e) {
-            log.error(e.getMessage(), e);
-            return e.getMessage();
-        }
+        userRepository.save(user);
 
         return "User registered successfully!";
     }

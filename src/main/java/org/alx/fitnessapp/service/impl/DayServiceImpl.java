@@ -2,9 +2,9 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.DayDTOConverter;
-import org.alx.fitnessapp.exception.DayExceptionAbstract;
-import org.alx.fitnessapp.exception.InvalidBodyTypeGoalExceptionAbstract;
-import org.alx.fitnessapp.exception.DailyActivityExceptionAbstract;
+import org.alx.fitnessapp.exception.DayException;
+import org.alx.fitnessapp.exception.InvalidBodyTypeGoalException;
+import org.alx.fitnessapp.exception.DailyActivityException;
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.GenderEnum;
@@ -32,7 +32,7 @@ public class DayServiceImpl implements DayService {
     private final ExerciseStatsRepository exerciseStatsRepository;
 
     @Override
-    public String autoCreateDay() throws DayExceptionAbstract {
+    public String autoCreateDay() throws DayException {
         User loggedUser = userService.getLoggedUser();
         List<Day> days = new ArrayList<>();
         List<WorkoutRoutine> workouts = workoutRoutineService.autoCreateWorkoutRoutine();
@@ -52,14 +52,14 @@ public class DayServiceImpl implements DayService {
                         day.setWorkoutRoutine(workout);
                         days.add(day);
                     } else {
-                        throw new DayExceptionAbstract("Days already exist!");
+                        throw new DayException("Days already exist!");
                     }
                 }
 
                 dayRepository.saveAll(days);
             }
             return days.size() + " days created!";
-        } catch (DailyActivityExceptionAbstract | InvalidBodyTypeGoalExceptionAbstract e) {
+        } catch (DailyActivityException | InvalidBodyTypeGoalException e) {
             throw new RuntimeException(e);
         }
     }
@@ -88,7 +88,7 @@ public class DayServiceImpl implements DayService {
             dayRepository.save(day);
 
             return "Successfully created a workout day!";
-        } catch (DailyActivityExceptionAbstract | InvalidBodyTypeGoalExceptionAbstract e) {
+        } catch (DailyActivityException | InvalidBodyTypeGoalException e) {
             throw new RuntimeException(e);
         }
     }
@@ -146,7 +146,7 @@ public class DayServiceImpl implements DayService {
         return calories;
     }
 
-    private double dailyActivity(double bmr, User user) throws DailyActivityExceptionAbstract {
+    private double dailyActivity(double bmr, User user) throws DailyActivityException {
         if (user.getGoal().getWeeklyExercise() == 0)
             return bmr * 1.2;
         else if (user.getGoal().getWeeklyExercise() >= 1 && user.getGoal().getWeeklyExercise() <= 3)
@@ -156,10 +156,10 @@ public class DayServiceImpl implements DayService {
         else if (user.getGoal().getWeeklyExercise() == 6)
             return bmr * 1.8;
         else
-            throw new DailyActivityExceptionAbstract("User exercise needs to be at most 6 days per week");
+            throw new DailyActivityException("User exercise needs to be at most 6 days per week");
     }
 
-    private double getBmr(double bmr, String goalEnum) throws InvalidBodyTypeGoalExceptionAbstract {
+    private double getBmr(double bmr, String goalEnum) throws InvalidBodyTypeGoalException {
         if (BodyTypeGoalEnum.LOSE_WEIGHT.name().equals(goalEnum)) {
             return bmr - 500;
         } else if (BodyTypeGoalEnum.MAINTAIN_WEIGHT.name().equals(goalEnum)) {
@@ -167,7 +167,7 @@ public class DayServiceImpl implements DayService {
         } else if (BodyTypeGoalEnum.GAIN_WEIGHT.name().equals(goalEnum)) {
             return bmr + 300;
         } else {
-            throw new InvalidBodyTypeGoalExceptionAbstract("Body type goal is invalid");
+            throw new InvalidBodyTypeGoalException("Body type goal is invalid");
         }
     }
 
