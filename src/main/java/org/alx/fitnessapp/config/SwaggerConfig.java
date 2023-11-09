@@ -6,7 +6,6 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -21,17 +20,15 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
-                .build().apiInfo(metaData());
+                .build()
+                .apiInfo(apiInfo());
     }
 
-    private ApiInfo metaData() {
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("API reference for FitnessApp")
-                .description("\"Swagger Configuration for application")
-                .version("1.1.0")
-                .license("Apache 2.0")
-                .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
-                .contact(new Contact("alx", "", ""))
+                .description("Swagger Configuration for application")
+                .version("1.0.0")
                 .build();
     }
 
