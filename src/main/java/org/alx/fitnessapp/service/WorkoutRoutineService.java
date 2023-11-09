@@ -1,6 +1,7 @@
 package org.alx.fitnessapp.service;
 
 
+import org.alx.fitnessapp.exception.WorkoutExceptionAbstract;
 import org.alx.fitnessapp.model.dto.WorkoutRoutineDTO;
 import org.alx.fitnessapp.model.entity.WorkoutRoutine;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public interface WorkoutRoutineService {
 
-    List<WorkoutRoutine> autoCreateWorkoutRoutine() throws Exception;
+    List<WorkoutRoutine> autoCreateWorkoutRoutine() throws WorkoutExceptionAbstract;
 
     WorkoutRoutine createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
 

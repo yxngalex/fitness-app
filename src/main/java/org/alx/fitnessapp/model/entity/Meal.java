@@ -34,7 +34,7 @@ public class Meal {
     @JoinColumn(name = "FK_NUTRITION_ID")
     private Nutrition nutrition;
 
-    @Column(name = "MEAL_NAME", nullable = false)
+    @Column(name = "MEAL_NAME")
     private String mealName;
 
 }

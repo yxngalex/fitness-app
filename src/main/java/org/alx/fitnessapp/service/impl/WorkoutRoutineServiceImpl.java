@@ -2,6 +2,7 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.WorkoutRoutineDTOConverter;
+import org.alx.fitnessapp.exception.WorkoutExceptionAbstract;
 import org.alx.fitnessapp.model.dto.*;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
@@ -28,7 +29,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
 
 
     @Override
-    public List<WorkoutRoutine> autoCreateWorkoutRoutine() throws Exception {
+    public List<WorkoutRoutine> autoCreateWorkoutRoutine() throws WorkoutExceptionAbstract {
         User loggedInUser = userService.getLoggedUser();
 
         if (loggedInUser.getGoal() != null) {
@@ -53,7 +54,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
                         workoutRoutineRepository.save(workoutRoutine);
                         savedRoutines.add(workoutRoutine);
                     } else {
-                        throw new Exception("Already created workouts for next " + loggedInUser.getGoal().getWeeklyExercise() + " days!");
+                        throw new WorkoutExceptionAbstract("Already created workouts for next " + loggedInUser.getGoal().getWeeklyExercise() + " days!");
                     }
                 }
                 return savedRoutines;

@@ -2,6 +2,8 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.MealDTOConverter;
+import org.alx.fitnessapp.exception.DayExceptionAbstract;
+import org.alx.fitnessapp.exception.MealCreationExceptionAbstract;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.FoodDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
@@ -28,7 +30,7 @@ public class MealServiceImpl implements MealService {
     private final MealDTOConverter mealDTOConverter;
 
     @Override
-    public String createOrUpdateMeal(MealDTO dto) throws Exception {
+    public String createOrUpdateMeal(MealDTO dto) throws MealCreationExceptionAbstract {
         User loggedUser = userService.getLoggedUser();
         Meal existingMeal = mealRepository.findMealByMealName(dto.getMealName(), loggedUser.getUsername());
         Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dto.getDayDTO().getLoggedDate());
@@ -44,7 +46,7 @@ public class MealServiceImpl implements MealService {
                     }
                 }
             } else {
-                throw new Exception("Food list can't be empty!");
+                throw new MealCreationExceptionAbstract("Food list can't be empty!");
             }
 
             Meal meal = new Meal();
@@ -74,7 +76,7 @@ public class MealServiceImpl implements MealService {
 
                 return meal.getMealName() + " saved!";
             } else {
-                throw new Exception("Day must exist");
+                throw new DayExceptionAbstract("Day must exist");
             }
         } else {
             List<Food> existingFoods = foodRepository.findAllByMealListId(existingMeal.getId());
@@ -86,7 +88,7 @@ public class MealServiceImpl implements MealService {
                     }
                 }
             } else {
-                throw new Exception("Food list mustn't be empty!");
+                throw new MealCreationExceptionAbstract("Food list mustn't be empty!");
             }
             if (day != null) {
                 Nutrition nutritionPerMeal = countNutritionPerMeal(dto, loggedUser.getUsername());
@@ -114,7 +116,7 @@ public class MealServiceImpl implements MealService {
 
                 return existingMeal.getMealName() + " updated!";
             } else {
-                throw new Exception("Day must exist");
+                throw new DayExceptionAbstract("Day must exist");
             }
         }
     }
@@ -124,8 +126,17 @@ public class MealServiceImpl implements MealService {
         User loggedUser = userService.getLoggedUser();
         Meal meal = mealRepository.findMealByMealName(dto.getMealName(), loggedUser.getUsername());
         String mealName = meal.getMealName();
+        Nutrition dayNutrition = nutritionRepository.findNutritionForDay(meal.getDay());
+
+        dayNutrition.setProtein(dayNutrition.getProtein() - meal.getNutrition().getProtein());
+        dayNutrition.setCarbs(dayNutrition.getCarbs() - meal.getNutrition().getCarbs());
+        dayNutrition.setCalories(dayNutrition.getCalories() - meal.getNutrition().getCalories());
+        dayNutrition.setFat(dayNutrition.getFat() - meal.getNutrition().getFat());
+
+        nutritionRepository.save(dayNutrition);
 
         mealRepository.delete(meal);
+        nutritionRepository.delete(meal.getNutrition());
 
         return mealName + " deleted";
     }
@@ -166,12 +177,12 @@ public class MealServiceImpl implements MealService {
         return food.getFoodName() + " removed from " + findExistingMeal.getMealName();
     }
     @Override
-    public MealDTO getMealByDay(DayDTO dayDTO) {
+    public MealDTO getMealByDay(DayDTO dayDTO, String mealName) {
         User loggedUser = userService.getLoggedUser();
 
         Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dayDTO.getLoggedDate());
 
-        Meal findExistingMeal = mealRepository.findMealByDay(day);
+        Meal findExistingMeal = mealRepository.findMealByDay(day, mealName);
 
         return mealDTOConverter.convertMealToMealDTO(findExistingMeal);
     }

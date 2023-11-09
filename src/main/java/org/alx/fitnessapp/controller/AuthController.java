@@ -1,7 +1,7 @@
 package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.alx.fitnessapp.exception.UserAlreadyExistsException;
+import org.alx.fitnessapp.exception.UserAlreadyExistsExceptionAbstract;
 import org.alx.fitnessapp.model.dto.LoginResponse;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.security.TokenProvider;
@@ -30,7 +30,7 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody UserDTO userDTO) {
         try {
             return new ResponseEntity<>(userService.registerUser(userDTO), HttpStatus.OK);
-        } catch (UserAlreadyExistsException e) {
+        } catch (UserAlreadyExistsExceptionAbstract e) {
             throw new RuntimeException(e);
         }
     }

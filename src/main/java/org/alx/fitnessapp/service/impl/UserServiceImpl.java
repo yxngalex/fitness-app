@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.alx.fitnessapp.converter.GoalDTOConverter;
 import org.alx.fitnessapp.converter.UserDTOConverter;
-import org.alx.fitnessapp.exception.AgeValidationException;
-import org.alx.fitnessapp.exception.EmailValidationException;
-import org.alx.fitnessapp.exception.UserAlreadyExistsException;
+import org.alx.fitnessapp.exception.InvalidAgeValidationExceptionAbstract;
+import org.alx.fitnessapp.exception.InvalidEmailValidationExceptionAbstract;
+import org.alx.fitnessapp.exception.UserAlreadyExistsExceptionAbstract;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.Goal;
 import org.alx.fitnessapp.model.entity.User;
@@ -14,7 +14,6 @@ import org.alx.fitnessapp.repository.GoalRepository;
 import org.alx.fitnessapp.repository.UserRepository;
 import org.alx.fitnessapp.service.UserService;
 import org.alx.fitnessapp.validation.Validator;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,13 +34,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String registerUser(UserDTO userDTO) throws UserAlreadyExistsException {
+    public String registerUser(UserDTO userDTO) throws UserAlreadyExistsExceptionAbstract {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new UserAlreadyExistsException("User already exists!");
+            throw new UserAlreadyExistsExceptionAbstract("User already exists!");
         }
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new UserAlreadyExistsException("Account with this email already exists");
+            throw new UserAlreadyExistsExceptionAbstract("Account with this email already exists");
         }
 
         try {
@@ -62,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
                 userRepository.save(user);
             }
-        } catch (EmailValidationException | AgeValidationException e) {
+        } catch (InvalidEmailValidationExceptionAbstract | InvalidAgeValidationExceptionAbstract e) {
             log.error(e.getMessage(), e);
             return e.getMessage();
         }
