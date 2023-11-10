@@ -125,23 +125,9 @@ public class DayServiceImpl implements DayService {
     private double BMRCalculator(User user) {
         double calories = 0d;
         if (user.getGender().equalsIgnoreCase(GenderEnum.MAN.getValue())) {
-            if (user.getAge() == 18) {
-                calories = user.getWeight() * 1.0 * 24 * 1.0;
-            } else if (user.getAge() > 18 && user.getAge() <= 28) {
-                calories = user.getWeight() * 1.0 * 24 * 0.95;
-            } else if (user.getAge() > 28 && user.getAge() <= 38) {
-                calories = user.getWeight() * 1.0 * 24 * 0.90;
-            } else {
-                calories = user.getWeight() * 1.0 * 24 * 0.85;
-            }
+            calories = 88.362 + (13.397 * user.getWeight()) + (4.799 * user.getHeight()) - (5.677 * user.getAge());
         } else if (user.getGender().equalsIgnoreCase(GenderEnum.WOMAN.getValue())) {
-            if (user.getAge() >= 18 && user.getAge() <= 20) {
-                calories = user.getWeight() * 1.0 * 24 * 0.95;
-            } else if (user.getAge() > 20 && user.getAge() <= 28) {
-                calories = user.getWeight() * 1.0 * 24 * 0.90;
-            } else {
-                calories = user.getWeight() * 1.0 * 24 * 0.85;
-            }
+            calories = 447.593 + (9.247 * user.getWeight()) + (3.098 * user.getHeight()) - (4.330 * user.getAge());
         }
         return calories;
     }
@@ -150,11 +136,11 @@ public class DayServiceImpl implements DayService {
         if (user.getGoal().getWeeklyExercise() == 0)
             return bmr * 1.2;
         else if (user.getGoal().getWeeklyExercise() >= 1 && user.getGoal().getWeeklyExercise() <= 3)
-            return bmr * 1.55;
+            return bmr * 1.375;
         else if (user.getGoal().getWeeklyExercise() >= 4 && user.getGoal().getWeeklyExercise() <= 5)
-            return bmr * 1.65;
+            return bmr * 1.55;
         else if (user.getGoal().getWeeklyExercise() == 6)
-            return bmr * 1.8;
+            return bmr * 1.725;
         else
             throw new DailyActivityException("User exercise needs to be at most 6 days per week");
     }

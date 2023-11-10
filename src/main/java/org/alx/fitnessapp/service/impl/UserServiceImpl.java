@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
 
         user = userConverter.convertUserDTOToUser(userDTO);
 
-        user.setIsDeleted(false);
         user.setGoal(goal);
 
         userRepository.save(user);

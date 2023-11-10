@@ -20,6 +20,7 @@ public interface WorkoutRoutineRepository extends JpaRepository<WorkoutRoutine, 
     @Query("SELECT w FROM WorkoutRoutine w JOIN User u ON w.goal.id = u.goal.id WHERE u.id = :id ORDER BY w.dateStart ASC")
     List<WorkoutRoutine> findAllByUserId(@Param("id") int id);
 
-    Boolean existsByDateStart(LocalDate date);
+    @Query("SELECT CASE WHEN COUNT(w) > 0 THEN true ELSE false END FROM WorkoutRoutine w JOIN User u ON w.goal.id = u.goal.id WHERE w.dateStart = :dateStart AND u.username = :username")
+    Boolean existsByDateStart(@Param("dateStart") LocalDate date, @Param("username") String username);
 
 }

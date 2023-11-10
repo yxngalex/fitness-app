@@ -31,31 +31,28 @@ public class User {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", nullable = false)
     private String username;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
-
-    @Column(name = "IS_DELETED")
-    private Boolean isDeleted;
 
     @Column(name = "FIRST_NAME")
     private String firstName;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @Column(name = "HEIGHT", precision = 10)
-    private Double height;
+    @Column(name = "HEIGHT", nullable = false)
+    private Integer height;
 
-    @Column(name = "WEIGHT", precision = 10)
+    @Column(name = "WEIGHT", precision = 10, nullable = false)
     private Double weight;
 
-    @Column(name = "AGE")
+    @Column(name = "AGE", nullable = false)
     private Integer age;
 
-    @Column(name = "GENDER")
+    @Column(name = "GENDER", nullable = false)
     private String gender;
 
 }

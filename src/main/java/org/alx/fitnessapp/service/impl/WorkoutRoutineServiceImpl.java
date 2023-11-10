@@ -38,7 +38,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
                 List<WorkoutRoutine> savedRoutines = new ArrayList<>();
 
                 for (int i = 0; i < loggedInUser.getGoal().getWeeklyExercise(); i++) {
-                    if (!workoutRoutineRepository.existsByDateStart(LocalDate.now().plusDays(i))) {
+                    if (!workoutRoutineRepository.existsByDateStart(LocalDate.now().plusDays(i), loggedInUser.getUsername())) {
                         WorkoutRoutine workoutRoutine = new WorkoutRoutine();
                         workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
                         workoutRoutine.setGoal(loggedInUser.getGoal());
@@ -62,7 +62,7 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
                 Category mixedCategory = categoryService.getMixedCategory();
                 List<WorkoutRoutine> savedRoutines = new ArrayList<>();
                 for (int i = 0; i < loggedInUser.getGoal().getWeeklyExercise(); i++) {
-                    if (!workoutRoutineRepository.existsByDateStart(LocalDate.now().plusDays(i))) {
+                    if (!workoutRoutineRepository.existsByDateStart(LocalDate.now().plusDays(i), loggedInUser.getUsername())) {
                         WorkoutRoutine workoutRoutine = new WorkoutRoutine();
                         workoutRoutine.setDateStart(LocalDate.now().plusDays(i));
                         workoutRoutine.setGoal(loggedInUser.getGoal());
