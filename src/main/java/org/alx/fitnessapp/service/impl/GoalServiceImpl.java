@@ -60,6 +60,8 @@ public class GoalServiceImpl implements GoalService {
                 } else {
                     g.setBodyTypeGoal(BodyTypeGoalEnum.MAINTAIN_WEIGHT.name());
                 }
+            } else {
+                g.setBodyTypeGoal(goalDTO.getBodyTypeGoal());
             }
             g.setWeightGoal(goalDTO.getWeightGoal());
             g.setWeeklyExercise(goalDTO.getWeeklyExercise());
