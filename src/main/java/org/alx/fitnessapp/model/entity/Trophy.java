@@ -22,10 +22,10 @@ public class Trophy {
     private Integer id;
 
     @OneToMany(mappedBy = "trophy", cascade = CascadeType.ALL)
-    private List<TrophyUser> trophyUsers = new ArrayList<>();
+    private List<TrophyUser> trophyUsers;
 
-    @Column(name = "TROPGY_NAME")
-    private String tropgyName;
+    @Column(name = "TROPHY_NAME")
+    private String trophyName;
 
     @Column(name = "TROPHY_DESCRIPTION")
     private String trophyDescription;
