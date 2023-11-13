@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,8 +88,16 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
 
     @Override
     public WorkoutRoutine createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO) {
+//        workoutRoutineDTO.getExerciseStatsDTO().forEach(obj -> {
+//            if (obj.getExerciseDTO().getImage() != null) {
+//                if (!obj.getExerciseDTO().getImage().isEmpty()) {
+//                    obj.getExerciseDTO().setImage("");
+//                }
+//            }
+//        });
+
         WorkoutRoutine wroToSave = converter.convertWorkoutRoutineDTOToWorkoutRoutine(workoutRoutineDTO);
-        Category cat = categoryRepository.findCategoryByCategoryName(wroToSave.getCategory().getCategoryName());
+        Category cat = categoryRepository.findCategoryByCategoryName(workoutRoutineDTO.getCategoryDTO().getCategoryName());
         List<ExerciseStats> stats = new ArrayList<>();
         User loggedInUser = userService.getLoggedUser();
 

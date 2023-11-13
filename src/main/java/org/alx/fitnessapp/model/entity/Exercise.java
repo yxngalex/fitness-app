@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.sql.Blob;
 
 @Getter
 @Setter
@@ -35,6 +36,6 @@ public class Exercise {
 
     @Lob
     @Column(name = "IMAGE")
-    private byte[] image;
+    private Blob image;
 
 }
