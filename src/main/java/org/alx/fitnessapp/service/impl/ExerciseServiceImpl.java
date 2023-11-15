@@ -50,7 +50,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         for (Exercise exercise : exercises) {
             ExerciseDTO ex = converter.convertExerciseToExerciseDTO(exercise);
-//            ex.setImage(ImageUtil.convertImageToBase64(exercise.getImage()));
             dtos.add(ex);
         }
 

@@ -2,6 +2,7 @@ package org.alx.fitnessapp.config;
 
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.GenderEnum;
+import org.alx.fitnessapp.model.dto.TrophyUserDTO;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
@@ -46,19 +47,15 @@ public class ConfigBaseTest {
     @MockBean
     protected DayRepository dayRepository;
     @MockBean
-    protected ExerciseRepository exerciseRepository;
-    @MockBean
     protected ExerciseStatsRepository exerciseStatsRepository;
-    @MockBean
-    protected FoodRepository foodRepository;
     @MockBean
     protected MealRepository mealRepository;
     @MockBean
     protected NutritionRepository nutritionRepository;
     @MockBean
-    protected TrophyRepository trophyRepository;
+    protected TrophyUserRepository trophyUserRepository;
     @MockBean
-    protected CategoryRepository categoryRepository;
+    protected TrophyRepository trophyRepository;
     @MockBean
     protected UserService userService;
     protected UserDetailsService userDetailsService;
@@ -69,18 +66,14 @@ public class ConfigBaseTest {
         User mockUser = getUser();
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(mockUser));
         when(userService.getLoggedUser()).thenReturn(mockUser);
-        when(categoryRepository.save(any())).thenReturn(new Category());
         when(goalRepository.save(any())).thenReturn(new Goal());
         when(userRepository.save(any())).thenReturn(new User());
         when(workoutRoutineRepository.save(any())).thenReturn(new WorkoutRoutine());
         when(dayRepository.save(any())).thenReturn(new Day());
+        when(trophyRepository.findTrophyByTrophyName(anyString())).thenReturn(getTrophy());
         when(dayRepository.findAllByUserId(anyInt())).thenReturn(mockingDaysByUser(mockUser));
-        when(exerciseRepository.save(any())).thenReturn(new Exercise());
-        when(dayRepository.save(any())).thenReturn(new Day());
         when(exerciseStatsRepository.save(any())).thenReturn(new ExerciseStats());
-        when(foodRepository.save(any())).thenReturn(new Food());
         when(mealRepository.save(any())).thenReturn(new Meal());
-        when(trophyRepository.save(any())).thenReturn(new Trophy());
         when(nutritionRepository.save(any())).thenReturn(new Nutrition());
         doNothing().when(dayRepository).delete(any(Day.class));
         setAuthentication(mockUser);
@@ -95,6 +88,16 @@ public class ConfigBaseTest {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private static Trophy getTrophy() {
+        Trophy trophy = new Trophy();
+        trophy.setId(1);
+        trophy.setTrophyName("test");
+        trophy.setTrophyDescription("test");
+        trophy.setTrophyImage(null);
+
+        return trophy;
     }
 
 

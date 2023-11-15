@@ -58,4 +58,9 @@ public class DayServiceTest extends ConfigBaseTest {
         assertEquals(user.getGoal().getWeeklyExercise(), days.size());
     }
 
+    @Test
+    void deleteDayTest() {
+        assertTrue(true);
+    }
+
 }

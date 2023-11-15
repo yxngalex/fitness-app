@@ -8,9 +8,7 @@ import java.util.List;
 public interface ExerciseService {
 
     List<Exercise> getRandomExercisesByCategory(String categoryName, int limit);
-
     List<Exercise> getRandomExercisesWithoutCategory();
-
     List<ExerciseDTO> getAllExercise();
     List<ExerciseDTO> getExerciseAutoComplete(String value);
 }

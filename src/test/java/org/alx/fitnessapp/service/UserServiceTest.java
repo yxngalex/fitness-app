@@ -25,8 +25,6 @@ public class UserServiceTest extends ConfigBaseTest {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserDTOConverter converter;
 
     UserDTO user;
 
