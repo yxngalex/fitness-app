@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.alx.fitnessapp.converter.GoalDTOConverter;
 import org.alx.fitnessapp.converter.UserDTOConverter;
-import org.alx.fitnessapp.exception.InvalidAgeValidationException;
-import org.alx.fitnessapp.exception.InvalidEmailValidationException;
 import org.alx.fitnessapp.exception.UserAlreadyExistsException;
 import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.Goal;
@@ -13,7 +11,6 @@ import org.alx.fitnessapp.model.entity.User;
 import org.alx.fitnessapp.repository.GoalRepository;
 import org.alx.fitnessapp.repository.UserRepository;
 import org.alx.fitnessapp.service.UserService;
-import org.alx.fitnessapp.validation.Validator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,11 +46,9 @@ public class UserServiceImpl implements UserService {
 
         Goal goal = goalConverter.convertGoalDTOToGoal(userDTO.getGoal());
 
-        if (goal != null)
-            goalRepository.save(goal);
+        goalRepository.save(goal);
 
         user = userConverter.convertUserDTOToUser(userDTO);
-
         user.setGoal(goal);
 
         userRepository.save(user);

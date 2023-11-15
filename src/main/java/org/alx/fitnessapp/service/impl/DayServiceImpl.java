@@ -119,7 +119,7 @@ public class DayServiceImpl implements DayService {
             workoutRoutineRepository.delete(wro);
             return "Deleted " + date;
         }
-        return "Day, you're trying to delete, doesn't exist";
+        return "Day you're trying to delete, doesn't exist";
     }
 
     private double BMRCalculator(User user) {
