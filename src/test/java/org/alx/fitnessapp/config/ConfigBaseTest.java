@@ -7,6 +7,7 @@ import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
 import org.alx.fitnessapp.security.UserDetailsServiceImpl;
+import org.alx.fitnessapp.service.DayService;
 import org.alx.fitnessapp.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +74,7 @@ public class ConfigBaseTest {
         when(dayRepository.save(any())).thenReturn(new Day());
         when(trophyRepository.findTrophyByTrophyName(anyString())).thenReturn(getTrophy());
         when(dayRepository.findAllByUserId(anyInt())).thenReturn(mockingDaysByUser(mockUser));
+        when(dayRepository.findDayByUserIdAndLoggedDate(anyInt(), any(LocalDate.class))).thenReturn(getDay(mockUser));
         when(exerciseStatsRepository.save(any())).thenReturn(new ExerciseStats());
         when(mealRepository.save(any())).thenReturn(new Meal());
         when(nutritionRepository.save(any())).thenReturn(new Nutrition());
@@ -90,7 +93,7 @@ public class ConfigBaseTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private static Trophy getTrophy() {
+    private Trophy getTrophy() {
         Trophy trophy = new Trophy();
         trophy.setId(1);
         trophy.setTrophyName("test");
@@ -123,6 +126,16 @@ public class ConfigBaseTest {
         mockUser.setGoal(goal);
 
         return mockUser;
+    }
+
+    private Day getDay(User user) {
+        Day day = new Day();
+        day.setNutrition(null);
+        day.setBmr(123.4);
+        day.setLoggedDate(LocalDate.now());
+        day.setUser(user);
+
+        return day;
     }
 
     private List<Day> mockingDaysByUser(User user) {
