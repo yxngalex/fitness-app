@@ -129,8 +129,15 @@ public class ConfigBaseTest {
     }
 
     private Day getDay(User user) {
+        Nutrition n = new Nutrition();
+        n.setId(1);
+        n.setProtein(2.0);
+        n.setFat(2.0);
+        n.setCarbs(2.0);
+        n.setCalories(2.0);
+
         Day day = new Day();
-        day.setNutrition(null);
+        day.setNutrition(n);
         day.setBmr(123.4);
         day.setLoggedDate(LocalDate.now());
         day.setUser(user);
