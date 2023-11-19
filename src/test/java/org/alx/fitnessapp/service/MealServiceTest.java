@@ -102,7 +102,7 @@ public class MealServiceTest extends ConfigBaseTest {
     }
 
     @Test
-    void createOrUpdateMeal() throws MealCreationException {
+    void createOrUpdateMeal_create() throws MealCreationException {
         MealDTO mealDTO = new MealDTO();
         mealDTO.setMealName("Breakfast test");
         mealDTO.setDayDTO(dayDTO);
@@ -118,6 +118,24 @@ public class MealServiceTest extends ConfigBaseTest {
         verify(nutritionRepository, times(2)).save(any(Nutrition.class));
     }
 
+    @Test
+    void createOrUpdateMeal_update() throws MealCreationException {
+        MealDTO mealDTO = new MealDTO();
+        mealDTO.setMealName("Lunch");
+        mealDTO.setDayDTO(dayDTO);
+        mealDTO.setFoodList(foodDTOList);
+
+        when(mealRepository.findMealByMealName(anyString(), anyString())).thenReturn(mealDTOConverter.convertMealDTOToMeal(mealDTO));
+
+        String result = mealService.createOrUpdateMeal(mealDTO);
+        String expected = mealDTO.getMealName() + " updated!";
+
+        assertEquals(expected, result);
+        verify(mealRepository, times(1)).save(any(Meal.class));
+        verify(dayRepository, times(1)).save(any(Day.class));
+        // Saves one for day, and one for meal
+        verify(nutritionRepository, times(2)).save(any(Nutrition.class));
+    }
 
     @Test
     void deleteMealPlan() {

@@ -70,14 +70,14 @@ public class ConfigBaseTest {
         when(userService.getLoggedUser()).thenReturn(mockUser);
         when(goalRepository.save(any())).thenReturn(new Goal());
         when(userRepository.save(any())).thenReturn(new User());
-        when(workoutRoutineRepository.save(any())).thenReturn(new WorkoutRoutine());
         when(dayRepository.save(any())).thenReturn(new Day());
         when(trophyRepository.findTrophyByTrophyName(anyString())).thenReturn(getTrophy());
         when(dayRepository.findAllByUserId(anyInt())).thenReturn(mockingDaysByUser(mockUser));
         when(dayRepository.findDayByUserIdAndLoggedDate(anyInt(), any(LocalDate.class))).thenReturn(getDay(mockUser));
-        when(exerciseStatsRepository.save(any())).thenReturn(new ExerciseStats());
         when(mealRepository.save(any())).thenReturn(new Meal());
         when(nutritionRepository.save(any())).thenReturn(new Nutrition());
+        when(exerciseStatsRepository.save(any(ExerciseStats.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(workoutRoutineRepository.save(any(WorkoutRoutine.class))).thenAnswer(invocation -> invocation.getArgument(0));
         doNothing().when(dayRepository).delete(any(Day.class));
         setAuthentication(mockUser);
     }
@@ -121,7 +121,7 @@ public class ConfigBaseTest {
         goal.setId(1);
         goal.setBodyTypeGoal(BodyTypeGoalEnum.GAIN_WEIGHT.name());
         goal.setWeightGoal(72.0);
-        goal.setWeeklyExercise(4);
+        goal.setWeeklyExercise(2);
 
         mockUser.setGoal(goal);
 

@@ -88,14 +88,6 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
 
     @Override
     public WorkoutRoutine createWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO) {
-//        workoutRoutineDTO.getExerciseStatsDTO().forEach(obj -> {
-//            if (obj.getExerciseDTO().getImage() != null) {
-//                if (!obj.getExerciseDTO().getImage().isEmpty()) {
-//                    obj.getExerciseDTO().setImage("");
-//                }
-//            }
-//        });
-
         WorkoutRoutine wroToSave = converter.convertWorkoutRoutineDTOToWorkoutRoutine(workoutRoutineDTO);
         Category cat = categoryRepository.findCategoryByCategoryName(workoutRoutineDTO.getCategoryDTO().getCategoryName());
         List<ExerciseStats> stats = new ArrayList<>();
