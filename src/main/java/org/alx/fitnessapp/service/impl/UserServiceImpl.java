@@ -33,11 +33,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String registerUser(UserDTO userDTO) throws UserAlreadyExistsException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
-            throw new UserAlreadyExistsException("Username already exists!");
+            throw new UserAlreadyExistsException("User with this username already exists! Please try using another username.");
         }
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new UserAlreadyExistsException("Account with this email already exists");
+            throw new UserAlreadyExistsException("User with this email already exists! Please try using another email.");
         }
 
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));

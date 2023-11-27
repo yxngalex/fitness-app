@@ -1,7 +1,6 @@
 package org.alx.fitnessapp.service;
 
 import org.alx.fitnessapp.config.ConfigBaseTest;
-import org.alx.fitnessapp.converter.UserDTOConverter;
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.GenderEnum;
 import org.alx.fitnessapp.model.dto.GoalDTO;
@@ -39,7 +38,7 @@ public class UserServiceTest extends ConfigBaseTest {
         user.setAge(21);
         user.setWeight(68.8);
         user.setHeight(180);
-        user.setGender(GenderEnum.MAN.name());
+        user.setGender(GenderEnum.MALE.name());
         when(userService.getByUsername(anyString())).thenReturn(user);
     }
 

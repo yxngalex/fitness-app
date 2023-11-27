@@ -124,9 +124,9 @@ public class DayServiceImpl implements DayService {
 
     private double BMRCalculator(User user) {
         double calories = 0d;
-        if (user.getGender().equalsIgnoreCase(GenderEnum.MAN.getValue())) {
+        if (user.getGender().equalsIgnoreCase(GenderEnum.MALE.getValue())) {
             calories = 88.362 + (13.397 * user.getWeight()) + (4.799 * user.getHeight()) - (5.677 * user.getAge());
-        } else if (user.getGender().equalsIgnoreCase(GenderEnum.WOMAN.getValue())) {
+        } else if (user.getGender().equalsIgnoreCase(GenderEnum.FEMALE.getValue())) {
             calories = 447.593 + (9.247 * user.getWeight()) + (3.098 * user.getHeight()) - (4.330 * user.getAge());
         }
         return calories;

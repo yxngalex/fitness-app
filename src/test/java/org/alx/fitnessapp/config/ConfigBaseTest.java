@@ -2,12 +2,9 @@ package org.alx.fitnessapp.config;
 
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.GenderEnum;
-import org.alx.fitnessapp.model.dto.TrophyUserDTO;
-import org.alx.fitnessapp.model.dto.UserDTO;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
 import org.alx.fitnessapp.security.UserDetailsServiceImpl;
-import org.alx.fitnessapp.service.DayService;
 import org.alx.fitnessapp.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,7 +112,7 @@ public class ConfigBaseTest {
         mockUser.setAge(21);
         mockUser.setWeight(68.8);
         mockUser.setHeight(180);
-        mockUser.setGender(GenderEnum.MAN.name());
+        mockUser.setGender(GenderEnum.MALE.name());
 
         Goal goal = new Goal();
         goal.setId(1);
