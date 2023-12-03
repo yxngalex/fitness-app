@@ -2,12 +2,14 @@ package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.converter.DayDTOConverter;
+import org.alx.fitnessapp.converter.NutritionDTOConverter;
 import org.alx.fitnessapp.exception.DayException;
 import org.alx.fitnessapp.exception.InvalidBodyTypeGoalException;
 import org.alx.fitnessapp.exception.DailyActivityException;
 import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.GenderEnum;
+import org.alx.fitnessapp.model.dto.NutritionDTO;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
 import org.alx.fitnessapp.service.DayService;
@@ -27,8 +29,8 @@ public class DayServiceImpl implements DayService {
     private final WorkoutRoutineService workoutRoutineService;
     private final UserService userService;
     private final DayDTOConverter converter;
+    private final NutritionDTOConverter nutritionConverter;
     private final WorkoutRoutineRepository workoutRoutineRepository;
-    private final ExerciseRepository exerciseRepository;
     private final ExerciseStatsRepository exerciseStatsRepository;
 
     @Override
@@ -120,6 +122,44 @@ public class DayServiceImpl implements DayService {
             return "Deleted " + date;
         }
         return "Day you're trying to delete, doesn't exist";
+    }
+
+    @Override
+    public DayDTO getDayByDate(LocalDate date) {
+        User loggedUser = userService.getLoggedUser();
+
+        return converter.convertDayToDayDTO(dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), date));
+    }
+
+    @Override
+    public NutritionDTO getOverallNutrition() {
+        User loggedUser = userService.getLoggedUser();
+        List<Day> allDays = dayRepository.findAllByUserId(loggedUser.getId());
+
+        Nutrition overallNutrition = new Nutrition();
+
+        double overallCalories = 0.0;
+        double overallProtein = 0.0;
+        double overallCarbs = 0.0;
+        double overallFat = 0.0;
+
+        for (Day day : allDays) {
+            Nutrition nutrition = day.getNutrition();
+
+            if (nutrition != null) {
+                overallCalories += nutrition.getCalories();
+                overallProtein += nutrition.getProtein();
+                overallCarbs += nutrition.getCarbs();
+                overallFat += nutrition.getFat();
+            }
+        }
+
+        overallNutrition.setCalories(overallCalories);
+        overallNutrition.setProtein(overallProtein);
+        overallNutrition.setCarbs(overallCarbs);
+        overallNutrition.setFat(overallFat);
+
+        return nutritionConverter.convertNutritionToNutritionDTO(overallNutrition);
     }
 
     private double BMRCalculator(User user) {

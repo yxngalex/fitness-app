@@ -1,12 +1,14 @@
 package org.alx.fitnessapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.alx.fitnessapp.converter.FoodDTOConverter;
 import org.alx.fitnessapp.converter.MealDTOConverter;
 import org.alx.fitnessapp.exception.DayException;
 import org.alx.fitnessapp.exception.MealCreationException;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.FoodDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
+import org.alx.fitnessapp.model.dto.OverviewFoodEntriesDTO;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.DayRepository;
 import org.alx.fitnessapp.repository.FoodRepository;
@@ -28,12 +30,13 @@ public class MealServiceImpl implements MealService {
     private final FoodRepository foodRepository;
     private final NutritionRepository nutritionRepository;
     private final MealDTOConverter mealDTOConverter;
+    private final FoodDTOConverter foodDTOConverter;
 
     @Override
     public String createOrUpdateMeal(MealDTO dto) throws MealCreationException {
         User loggedUser = userService.getLoggedUser();
-        Meal existingMeal = mealRepository.findMealByMealName(dto.getMealName(), loggedUser.getUsername());
         Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dto.getDayDTO().getLoggedDate());
+        Meal existingMeal = mealRepository.findMealByMealNameForDay(dto.getMealName(), day, loggedUser.getUsername());
 
         if (existingMeal == null) {
             List<Food> foods = new ArrayList<>();
@@ -176,6 +179,7 @@ public class MealServiceImpl implements MealService {
 
         return food.getFoodName() + " removed from " + findExistingMeal.getMealName();
     }
+
     @Override
     public MealDTO getMealByDay(DayDTO dayDTO, String mealName) {
         User loggedUser = userService.getLoggedUser();
@@ -185,6 +189,34 @@ public class MealServiceImpl implements MealService {
         Meal findExistingMeal = mealRepository.findMealByDay(day, mealName);
 
         return mealDTOConverter.convertMealToMealDTO(findExistingMeal);
+    }
+
+    @Override
+    public List<OverviewFoodEntriesDTO> getMealFoodEntries() {
+        User loggedUser = userService.getLoggedUser();
+
+        List<Meal> allMeals = mealRepository.findAllMealsByUser(loggedUser.getId());
+        List<OverviewFoodEntriesDTO> mealFoodEntries = new ArrayList<>();
+
+        for (Meal meal : allMeals) {
+            String mealName = meal.getMealName();
+            List<Food> foodList = meal.getFoodList();
+
+            List<FoodDTO> foodDTOList = new ArrayList<>();
+
+            for (Food food : foodList) {
+                FoodDTO foodDTO = foodDTOConverter.convertFoodToFoodDTO(food);
+                foodDTOList.add(foodDTO);
+            }
+
+            OverviewFoodEntriesDTO mealFoodEntryDTO = new OverviewFoodEntriesDTO();
+            mealFoodEntryDTO.setMealName(mealName);
+            mealFoodEntryDTO.setFoods(foodDTOList);
+
+            mealFoodEntries.add(mealFoodEntryDTO);
+        }
+
+        return mealFoodEntries;
     }
 
     private Nutrition countNutritionPerMeal(MealDTO dto, String username) {

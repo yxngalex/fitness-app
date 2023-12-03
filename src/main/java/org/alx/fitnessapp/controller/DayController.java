@@ -5,9 +5,11 @@ import org.alx.fitnessapp.exception.DayException;
 import org.alx.fitnessapp.exception.WorkoutException;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.service.DayService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -33,6 +35,12 @@ public class DayController {
     @GetMapping("/get")
     public ResponseEntity<List<DayDTO>> getDaysForUser() {
         return ResponseEntity.ok(dayService.getDays());
+    }
+
+    @GetMapping("/getByDate")
+    public ResponseEntity<DayDTO> getDayByDate(@RequestParam("date")
+                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(dayService.getDayByDate(date));
     }
 
     @DeleteMapping("/delete")

@@ -3,6 +3,9 @@ package org.alx.fitnessapp.service;
 import org.alx.fitnessapp.exception.MealCreationException;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.MealDTO;
+import org.alx.fitnessapp.model.dto.OverviewFoodEntriesDTO;
+
+import java.util.List;
 
 public interface MealService {
 
@@ -13,4 +16,7 @@ public interface MealService {
     String removeFoodFromMeal(MealDTO mealDTO);
 
     MealDTO getMealByDay(DayDTO dayDTO, String mealName);
+
+    List<OverviewFoodEntriesDTO> getMealFoodEntries();
+
 }
