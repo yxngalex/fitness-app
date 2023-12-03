@@ -77,6 +77,8 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
 
                         workoutRoutineRepository.save(workoutRoutine);
                         savedRoutines.add(workoutRoutine);
+                    } else {
+                        throw new WorkoutException("Already created workouts for next " + loggedInUser.getGoal().getWeeklyExercise() + " days!");
                     }
                 }
                 return savedRoutines;

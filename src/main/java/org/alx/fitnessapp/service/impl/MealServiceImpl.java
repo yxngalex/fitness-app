@@ -54,7 +54,7 @@ public class MealServiceImpl implements MealService {
 
             Meal meal = new Meal();
             if (day != null) {
-                Nutrition nutritionPerMeal = countNutritionPerMeal(dto, loggedUser.getUsername());
+                Nutrition nutritionPerMeal = countNutritionPerMeal(dto, day, loggedUser.getUsername());
 
                 meal.setDay(day);
                 meal.setMealName(dto.getMealName());
@@ -94,7 +94,7 @@ public class MealServiceImpl implements MealService {
                 throw new MealCreationException("Food list mustn't be empty!");
             }
             if (day != null) {
-                Nutrition nutritionPerMeal = countNutritionPerMeal(dto, loggedUser.getUsername());
+                Nutrition nutritionPerMeal = countNutritionPerMeal(dto, day, loggedUser.getUsername());
 
                 existingMeal.setDay(day);
                 existingMeal.setMealName(dto.getMealName());
@@ -219,8 +219,8 @@ public class MealServiceImpl implements MealService {
         return mealFoodEntries;
     }
 
-    private Nutrition countNutritionPerMeal(MealDTO dto, String username) {
-        Nutrition existingNutrition = nutritionRepository.findNutritionForMeal(dto.getMealName(), username);
+    private Nutrition countNutritionPerMeal(MealDTO dto, Day d, String username) {
+        Nutrition existingNutrition = nutritionRepository.findNutritionForMealForDay(dto.getMealName(), d, username);
 
         if (existingNutrition != null) {
             double calories = existingNutrition.getCalories();
