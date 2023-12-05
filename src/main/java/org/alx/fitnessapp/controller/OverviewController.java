@@ -1,6 +1,7 @@
 package org.alx.fitnessapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.alx.fitnessapp.model.dto.BmiDTO;
 import org.alx.fitnessapp.model.dto.NutritionDTO;
 import org.alx.fitnessapp.model.dto.OverviewFoodEntriesDTO;
 import org.alx.fitnessapp.service.DayService;
@@ -32,5 +33,10 @@ public class OverviewController {
     @GetMapping("/getFoodEntries")
     public ResponseEntity<List<OverviewFoodEntriesDTO>> getMealFoodEntries() {
         return ResponseEntity.ok(mealService.getMealFoodEntries());
+    }
+
+    @GetMapping("/calculateBmi")
+    public ResponseEntity<BmiDTO> calculateBmi() {
+        return ResponseEntity.ok(dayService.calculateBmi());
     }
 }

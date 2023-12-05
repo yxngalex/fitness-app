@@ -1,9 +1,9 @@
 package org.alx.fitnessapp.service;
 
 import org.alx.fitnessapp.exception.DayException;
+import org.alx.fitnessapp.model.dto.BmiDTO;
 import org.alx.fitnessapp.model.dto.DayDTO;
 import org.alx.fitnessapp.model.dto.NutritionDTO;
-import org.alx.fitnessapp.model.entity.Day;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,4 +21,6 @@ public interface DayService {
     DayDTO getDayByDate(LocalDate date);
 
     NutritionDTO getOverallNutrition();
+
+    BmiDTO calculateBmi();
 }

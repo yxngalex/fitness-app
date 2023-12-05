@@ -6,10 +6,7 @@ import org.alx.fitnessapp.converter.NutritionDTOConverter;
 import org.alx.fitnessapp.exception.DayException;
 import org.alx.fitnessapp.exception.InvalidBodyTypeGoalException;
 import org.alx.fitnessapp.exception.DailyActivityException;
-import org.alx.fitnessapp.model.dto.BodyTypeGoalEnum;
-import org.alx.fitnessapp.model.dto.DayDTO;
-import org.alx.fitnessapp.model.dto.GenderEnum;
-import org.alx.fitnessapp.model.dto.NutritionDTO;
+import org.alx.fitnessapp.model.dto.*;
 import org.alx.fitnessapp.model.entity.*;
 import org.alx.fitnessapp.repository.*;
 import org.alx.fitnessapp.service.DayService;
@@ -160,6 +157,27 @@ public class DayServiceImpl implements DayService {
         overallNutrition.setFat(overallFat);
 
         return nutritionConverter.convertNutritionToNutritionDTO(overallNutrition);
+    }
+
+    @Override
+    public BmiDTO calculateBmi() {
+        User loggedUser = userService.getLoggedUser();
+        BmiDTO bmi = new BmiDTO();
+
+        double heightInMeters = loggedUser.getHeight() / 100.0;
+        bmi.setBmi(loggedUser.getWeight() / (heightInMeters * heightInMeters));
+
+        if (bmi.getBmi() < 18.5) {
+            bmi.setBmiCategory("Underweight");
+        } else if (bmi.getBmi() < 24.9) {
+            bmi.setBmiCategory("Normal weight");
+        } else if (bmi.getBmi() < 29.9) {
+            bmi.setBmiCategory("Overweight");
+        } else {
+            bmi.setBmiCategory("Obese");
+        }
+
+        return bmi;
     }
 
     private double BMRCalculator(User user) {
