@@ -131,6 +131,7 @@ public class DayServiceImpl implements DayService {
     @Override
     public NutritionDTO getOverallNutrition() {
         User loggedUser = userService.getLoggedUser();
+        DecimalFormat format = new DecimalFormat("0.#");
         List<Day> allDays = dayRepository.findAllByUserId(loggedUser.getId());
 
         Nutrition overallNutrition = new Nutrition();
@@ -151,10 +152,15 @@ public class DayServiceImpl implements DayService {
             }
         }
 
-        overallNutrition.setCalories(overallCalories);
-        overallNutrition.setProtein(overallProtein);
-        overallNutrition.setCarbs(overallCarbs);
-        overallNutrition.setFat(overallFat);
+        double formattedCalories = Double.parseDouble(format.format(overallCalories));
+        double formattedProtein = Double.parseDouble(format.format(overallProtein));
+        double formattedCarbs = Double.parseDouble(format.format(overallCarbs));
+        double formattedFat = Double.parseDouble(format.format(overallFat));
+
+        overallNutrition.setCalories(formattedCalories);
+        overallNutrition.setProtein(formattedProtein);
+        overallNutrition.setCarbs(formattedCarbs);
+        overallNutrition.setFat(formattedFat);
 
         return nutritionConverter.convertNutritionToNutritionDTO(overallNutrition);
     }
@@ -162,10 +168,13 @@ public class DayServiceImpl implements DayService {
     @Override
     public BmiDTO calculateBmi() {
         User loggedUser = userService.getLoggedUser();
+        DecimalFormat format = new DecimalFormat("0.#");
         BmiDTO bmi = new BmiDTO();
 
         double heightInMeters = loggedUser.getHeight() / 100.0;
-        bmi.setBmi(loggedUser.getWeight() / (heightInMeters * heightInMeters));
+        double formatted = Double.parseDouble(format.format(loggedUser.getWeight() / (heightInMeters * heightInMeters)));
+        bmi.setBmi(formatted);
+
 
         if (bmi.getBmi() < 18.5) {
             bmi.setBmiCategory("Underweight");
