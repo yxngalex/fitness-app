@@ -11,4 +11,6 @@ public interface CategoryService {
 
     Category getMixedCategory();
 
+    List<CategoryDTO> getAllCategories();
+
 }
