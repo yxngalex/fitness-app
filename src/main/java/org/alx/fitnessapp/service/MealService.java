@@ -6,6 +6,7 @@ import org.alx.fitnessapp.model.dto.MealDTO;
 import org.alx.fitnessapp.model.dto.OverviewFoodEntriesDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MealService {
 
@@ -19,4 +20,5 @@ public interface MealService {
 
     List<OverviewFoodEntriesDTO> getMealFoodEntries();
 
+    List<MealDTO> getMealsInADay(DayDTO dayDTO);
 }

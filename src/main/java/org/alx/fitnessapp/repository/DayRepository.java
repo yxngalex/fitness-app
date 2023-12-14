@@ -18,4 +18,8 @@ public interface DayRepository extends JpaRepository<Day, Integer> {
     Boolean existsByUserIdAndLoggedDate(Integer id, LocalDate date);
 
     Day findDayByUserIdAndLoggedDate(Integer id, LocalDate date);
+
+    @Query("SELECT d FROM Day d WHERE d.user.id = :id AND d.loggedDate = (SELECT MIN(d2.loggedDate) FROM Day d2 WHERE d2.user.id = :id AND ABS(d2.loggedDate - :targetDate) = (SELECT MIN(ABS(d3.loggedDate - :targetDate)) FROM Day d3 WHERE d3.user.id = :id))")
+    Day findClosestDay(@Param("id") Integer id, @Param("targetDate") LocalDate targetDate);
+
 }

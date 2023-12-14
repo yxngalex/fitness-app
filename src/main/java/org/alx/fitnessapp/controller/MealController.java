@@ -9,6 +9,9 @@ import org.alx.fitnessapp.service.MealService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/meal")
 @RequiredArgsConstructor
@@ -27,6 +30,11 @@ public class MealController {
     @PostMapping("/remove")
     public ResponseEntity<String> removeFoodFromMeal(@RequestBody MealDTO mealDTO) {
         return ResponseEntity.ok(mealService.removeFoodFromMeal(mealDTO));
+    }
+
+    @PostMapping("/getAllMealsInADay")
+    public ResponseEntity<List<MealDTO>> getMealsInADay(@RequestBody DayDTO dayDTO) {
+        return ResponseEntity.ok(mealService.getMealsInADay(dayDTO));
     }
 
     @GetMapping("/get/{mealName}")

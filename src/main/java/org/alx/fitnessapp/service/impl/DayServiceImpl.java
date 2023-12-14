@@ -189,6 +189,13 @@ public class DayServiceImpl implements DayService {
         return bmi;
     }
 
+    @Override
+    public DayDTO getClosestDay(LocalDate date) {
+        User loggedUser = userService.getLoggedUser();
+
+        return converter.convertDayToDayDTO(dayRepository.findClosestDay(loggedUser.getId(), date));
+    }
+
     private double BMRCalculator(User user) {
         double calories = 0d;
         if (user.getGender().equalsIgnoreCase(GenderEnum.MALE.getValue())) {

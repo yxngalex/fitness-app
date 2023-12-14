@@ -23,4 +23,7 @@ public interface MealRepository extends JpaRepository<Meal, Integer> {
 
     @Query("SELECT m From Meal m JOIN Day d ON m.Day.id = d.id WHERE d.user.id = :userId")
     List<Meal> findAllMealsByUser(@Param("userId") Integer userId);
+
+    @Query("SELECT m From Meal m JOIN Day d ON m.Day.id = d.id WHERE d = :day")
+    List<Meal> findAllMealsByDay(Day day);
 }

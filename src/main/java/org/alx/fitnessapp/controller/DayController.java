@@ -39,8 +39,14 @@ public class DayController {
 
     @GetMapping("/getByDate")
     public ResponseEntity<DayDTO> getDayByDate(@RequestParam("date")
-                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+                                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date) {
         return ResponseEntity.ok(dayService.getDayByDate(date));
+    }
+
+    @GetMapping("/getClosestDay")
+    public ResponseEntity<DayDTO> getClosestDay(@RequestParam("date")
+                                               @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date) {
+        return ResponseEntity.ok(dayService.getClosestDay(date));
     }
 
     @DeleteMapping("/delete")

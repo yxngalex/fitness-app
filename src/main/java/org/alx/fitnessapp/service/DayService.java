@@ -23,4 +23,6 @@ public interface DayService {
     NutritionDTO getOverallNutrition();
 
     BmiDTO calculateBmi();
+
+    DayDTO getClosestDay(LocalDate date);
 }

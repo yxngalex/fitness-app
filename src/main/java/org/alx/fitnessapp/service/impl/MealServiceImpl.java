@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -217,6 +218,22 @@ public class MealServiceImpl implements MealService {
         }
 
         return mealFoodEntries;
+    }
+
+    @Override
+    public List<MealDTO> getMealsInADay(DayDTO dayDTO) {
+        List<MealDTO> mealDTOList = new ArrayList<>();
+        User loggedUser = userService.getLoggedUser();
+        Day day = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dayDTO.getLoggedDate());
+
+        List<Meal> findExistingMeal = mealRepository.findAllMealsByDay(day);
+
+
+        for (Meal meal : findExistingMeal) {
+            mealDTOList.add(mealDTOConverter.convertMealToMealDTO(meal));
+        }
+
+        return mealDTOList;
     }
 
     private Nutrition countNutritionPerMeal(MealDTO dto, Day d, String username) {
