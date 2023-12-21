@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -94,6 +95,15 @@ public class DayServiceImpl implements DayService {
 
     @Override
     public List<DayDTO> getDays() {
+        User loggedUser = userService.getLoggedUser();
+
+        List<DayDTO> days = getDaysForUser(loggedUser);
+        days.sort(Comparator.comparing(DayDTO::getLoggedDate).reversed());
+
+        return days;
+    }
+
+    private List<DayDTO> getDaysForUser(User user) {
         User loggedUser = userService.getLoggedUser();
         List<Day> day = dayRepository.findAllByUserId(loggedUser.getId());
 
@@ -187,13 +197,6 @@ public class DayServiceImpl implements DayService {
         }
 
         return bmi;
-    }
-
-    @Override
-    public DayDTO getClosestDay(LocalDate date) {
-        User loggedUser = userService.getLoggedUser();
-
-        return converter.convertDayToDayDTO(dayRepository.findClosestDay(loggedUser.getId(), date));
     }
 
     private double BMRCalculator(User user) {
