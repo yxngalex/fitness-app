@@ -11,4 +11,5 @@ public interface ExerciseService {
     List<Exercise> getRandomExercisesWithoutCategory();
     List<ExerciseDTO> getAllExercise();
     List<ExerciseDTO> getExerciseAutoComplete(String value);
+    List<ExerciseDTO> getAllExerciseByCategoryName(String categoryName);
 }

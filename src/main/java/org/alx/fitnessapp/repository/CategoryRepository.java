@@ -13,4 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Category findCategoryByCategoryName(String categoryName);
 
+    List<Category> findAllByCategoryNameNotLike(String categoryName);
+
 }

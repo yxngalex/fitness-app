@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.alx.fitnessapp.model.dto.ExerciseDTO;
 import org.alx.fitnessapp.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +22,10 @@ public class ExerciseController {
     @GetMapping("/getAutoComplete/{value}")
     public ResponseEntity<List<ExerciseDTO>> getAllExercise(@PathVariable("value") String value) {
         return ResponseEntity.ok(exerciseService.getExerciseAutoComplete(value));
+    }
+
+    @GetMapping("/getAllByCategoryName")
+    public ResponseEntity<List<ExerciseDTO>> getAllExerciseByCategoryName(@RequestParam String categoryName) {
+        return ResponseEntity.ok(exerciseService.getAllExerciseByCategoryName(categoryName));
     }
 }

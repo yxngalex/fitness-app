@@ -35,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDTO> getAllCategories() {
         List<CategoryDTO> categoryDTOList = new ArrayList<>();
-        for (Category category : categoryRepository.findAll()) {
+        for (Category category : categoryRepository.findAllByCategoryNameNotLike("MIXED")) {
             categoryDTOList.add(converter.convertCategoryToCategoryDTO(category));
         }
         return categoryDTOList;

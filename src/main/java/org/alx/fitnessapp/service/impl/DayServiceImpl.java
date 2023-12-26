@@ -78,7 +78,7 @@ public class DayServiceImpl implements DayService {
 
             day.setBmr(formatted);
 
-            day.setLoggedDate(LocalDate.now());
+            day.setLoggedDate(dayDTO.getLoggedDate());
 
             if (dayDTO.getWorkoutRoutineDTO() != null) {
                 WorkoutRoutine wro = workoutRoutineService.createWorkoutRoutine(dayDTO.getWorkoutRoutineDTO());
@@ -124,8 +124,8 @@ public class DayServiceImpl implements DayService {
             WorkoutRoutine wro = day.getWorkoutRoutine();
 
             dayRepository.delete(day);
-            exerciseStatsRepository.deleteAll(wro.getExerciseStats());
             workoutRoutineRepository.delete(wro);
+            exerciseStatsRepository.deleteAll(wro.getExerciseStats());
             return "Deleted " + date;
         }
         return "Day you're trying to delete, doesn't exist";

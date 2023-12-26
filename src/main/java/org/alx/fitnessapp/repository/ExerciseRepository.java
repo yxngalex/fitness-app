@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
-
     Exercise findExerciseByCategoryCategoryNameAndExerciseName(String categoryName, String exerciseName);
+
+    List<Exercise> findAllByCategoryCategoryName(String categoryName);
 }

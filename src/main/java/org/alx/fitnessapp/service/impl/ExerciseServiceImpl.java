@@ -65,4 +65,17 @@ public class ExerciseServiceImpl implements ExerciseService {
                         || f.getCategoryDTO().getCategoryName().toLowerCase(Locale.ROOT).startsWith(value.toLowerCase(Locale.ROOT)))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ExerciseDTO> getAllExerciseByCategoryName(String categoryName) {
+        List<Exercise> exercises = exerciseRepository.findAllByCategoryCategoryName(categoryName);
+        List<ExerciseDTO> dtos = new ArrayList<>();
+
+        for (Exercise exercise : exercises) {
+            ExerciseDTO ex = converter.convertExerciseToExerciseDTO(exercise);
+            dtos.add(ex);
+        }
+
+        return dtos;
+    }
 }
