@@ -133,21 +133,37 @@ public class WorkoutRoutineServiceImpl implements WorkoutRoutineService {
     }
 
     @Override
-    public WorkoutRoutineDTO updateWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO) {
+    public String updateWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO) {
         User loggedInUser = userService.getLoggedUser();
         Category cat = categoryRepository.findCategoryByCategoryName(workoutRoutineDTO.getCategoryDTO().getCategoryName());
         Goal goal = loggedInUser.getGoal();
         WorkoutRoutine existingData = workoutRoutineRepository.findByCategoryIdAndGoalIdAndDateStart(cat.getId(), goal.getId(), workoutRoutineDTO.getDateStart());
         WorkoutRoutine dataToSave = converter.convertWorkoutRoutineDTOToWorkoutRoutine(workoutRoutineDTO);
-        List<ExerciseStats> exerciseStats = dataToSave.getExerciseStats();
 
-        existingData.setExerciseStats(exerciseStats);
-        existingData.setGoal(dataToSave.getGoal());
-        existingData.setCategory(dataToSave.getCategory());
+        List<ExerciseStats> existingExerciseStats = existingData.getExerciseStats();
+        List<ExerciseStats> newExerciseStats = dataToSave.getExerciseStats();
+
+
+        for (ExerciseStats newStats : newExerciseStats) {
+
+            boolean exists = existingExerciseStats.stream()
+                    .anyMatch(existingStats ->
+                            existingStats.getExercise().getExerciseName().equals(newStats.getExercise().getExerciseName()) &&
+                                    Objects.equals(existingStats.getExerciseWeight(), newStats.getExerciseWeight()) &&
+                                    Objects.equals(existingStats.getSet(), newStats.getSet()) &&
+                                    Objects.equals(existingStats.getReps(), newStats.getReps()));
+            if (!exists) {
+                exerciseStatsRepository.save(newStats);
+                existingExerciseStats.add(newStats);
+            }
+        }
+        existingData.setExerciseStats(existingExerciseStats);
         existingData.setDateStart(dataToSave.getDateStart());
         existingData.setDateFinish(dataToSave.getDateFinish());
 
-        return converter.convertWorkoutRoutineToWorkoutRoutineDTO(workoutRoutineRepository.save(existingData));
+        workoutRoutineRepository.save(existingData);
+
+        return workoutRoutineDTO.getCategoryDTO().getCategoryName() + " workout updated successfully.";
     }
 
     @Override

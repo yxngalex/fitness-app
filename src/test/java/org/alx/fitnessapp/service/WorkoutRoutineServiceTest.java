@@ -182,15 +182,12 @@ public class WorkoutRoutineServiceTest extends ConfigBaseTest {
         when(workoutRoutineRepository.findByCategoryIdAndGoalIdAndDateStart(anyInt(), anyInt(), any(LocalDate.class))).thenReturn(existingData);
         when(workoutRoutineRepository.save(any(WorkoutRoutine.class))).thenReturn(existingData);
 
-        WorkoutRoutineDTO resultDTO = workoutRoutineService.updateWorkoutRoutine(inputDTO);
+        String resultDTO = workoutRoutineService.updateWorkoutRoutine(inputDTO);
+
+        String expected = inputDTO.getCategoryDTO().getCategoryName() + " workout updated successfully.";
 
         assertNotNull(resultDTO);
-        assertEquals(resultDTO.getCategoryDTO().getCategoryName(), inputDTO.getCategoryDTO().getCategoryName());
-        assertEquals(resultDTO.getCategoryDTO().getCategoryDescription(), inputDTO.getCategoryDTO().getCategoryDescription());
-        assertEquals(resultDTO.getGoalDTO().getWeeklyExercise(), inputDTO.getGoalDTO().getWeeklyExercise());
-        assertEquals(resultDTO.getGoalDTO().getWeightGoal(), inputDTO.getGoalDTO().getWeightGoal());
-        assertEquals(resultDTO.getGoalDTO().getBodyTypeGoal(), inputDTO.getGoalDTO().getBodyTypeGoal());
-        assertEquals(resultDTO.getExerciseStatsDTO().get(0).getExerciseDTO().getExerciseName(), inputDTO.getExerciseStatsDTO().get(0).getExerciseDTO().getExerciseName());
+        assertEquals(expected, resultDTO);
         verify(userService, times(2)).getLoggedUser();
         verify(categoryRepository, times(1)).findCategoryByCategoryName(anyString());
         verify(workoutRoutineRepository, times(1)).findByCategoryIdAndGoalIdAndDateStart(anyInt(), anyInt(), any(LocalDate.class));

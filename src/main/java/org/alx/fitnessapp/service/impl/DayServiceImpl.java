@@ -123,9 +123,10 @@ public class DayServiceImpl implements DayService {
 
             WorkoutRoutine wro = day.getWorkoutRoutine();
 
+            exerciseStatsRepository.deleteAll(wro.getExerciseStats());
+
             dayRepository.delete(day);
             workoutRoutineRepository.delete(wro);
-            exerciseStatsRepository.deleteAll(wro.getExerciseStats());
             return "Deleted " + date;
         }
         return "Day you're trying to delete, doesn't exist";

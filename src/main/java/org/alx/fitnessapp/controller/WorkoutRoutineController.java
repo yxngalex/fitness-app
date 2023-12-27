@@ -44,7 +44,7 @@ public class WorkoutRoutineController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<WorkoutRoutineDTO> updateWorkoutRoutine(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
+    public ResponseEntity<String> updateWorkoutRoutine(@RequestBody WorkoutRoutineDTO workoutRoutineDTO) {
         return ResponseEntity.ok(workoutRoutineService.updateWorkoutRoutine(workoutRoutineDTO));
     }
 

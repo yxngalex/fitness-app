@@ -15,7 +15,7 @@ public interface WorkoutRoutineService {
 
     List<WorkoutRoutineDTO> getWorkoutRoutineList();
 
-    WorkoutRoutineDTO updateWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
+    String updateWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
 
     String deleteWorkoutRoutine(WorkoutRoutineDTO workoutRoutineDTO);
 }
