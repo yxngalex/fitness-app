@@ -81,14 +81,12 @@ public class WorkoutRoutineServiceTest extends ConfigBaseTest {
         e.setId(1);
         e.setCategory(c1);
         e.setExerciseName("test");
-        e.setFavorited(false);
         e.setExerciseDescription("test");
 
         Exercise ex2 = new Exercise();
         ex2.setId(2);
         ex2.setCategory(cat);
         ex2.setExerciseName("test2");
-        ex2.setFavorited(false);
         ex2.setExerciseDescription("test2");
 
         exercises = List.of(e, ex2);

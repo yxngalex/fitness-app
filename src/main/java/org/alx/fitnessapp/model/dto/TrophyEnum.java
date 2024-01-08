@@ -1,7 +1,7 @@
 package org.alx.fitnessapp.model.dto;
 
 public enum TrophyEnum {
-    IT_BEGINS_NOW("It begins now.");
+    WELCOME("Welcome");
 
     private final String value;
 
@@ -11,6 +11,6 @@ public enum TrophyEnum {
 
     @Override
     public String toString() {
-        return IT_BEGINS_NOW.name();
+        return WELCOME.name();
     }
 }

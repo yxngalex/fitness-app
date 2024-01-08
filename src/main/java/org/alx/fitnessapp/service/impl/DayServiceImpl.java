@@ -67,27 +67,32 @@ public class DayServiceImpl implements DayService {
     @Override
     public String createDay(DayDTO dayDTO) {
         User loggedUser = userService.getLoggedUser();
+        Day existingDay = dayRepository.findDayByUserIdAndLoggedDate(loggedUser.getId(), dayDTO.getLoggedDate());
         try {
-            Day day = new Day();
-            day.setUser(loggedUser);
+            if (existingDay == null) {
+                Day day = new Day();
+                day.setUser(loggedUser);
 
-            double bmr = BMRCalculator(loggedUser);
-            double bmrWithGoal = getBmr(dailyActivity(bmr, loggedUser), loggedUser.getGoal().getBodyTypeGoal());
-            DecimalFormat format = new DecimalFormat("0.#");
-            double formatted = Double.parseDouble(format.format(bmrWithGoal));
+                double bmr = BMRCalculator(loggedUser);
+                double bmrWithGoal = getBmr(dailyActivity(bmr, loggedUser), loggedUser.getGoal().getBodyTypeGoal());
+                DecimalFormat format = new DecimalFormat("0.#");
+                double formatted = Double.parseDouble(format.format(bmrWithGoal));
 
-            day.setBmr(formatted);
+                day.setBmr(formatted);
 
-            day.setLoggedDate(dayDTO.getLoggedDate());
+                day.setLoggedDate(dayDTO.getLoggedDate());
 
-            if (dayDTO.getWorkoutRoutineDTO() != null) {
-                WorkoutRoutine wro = workoutRoutineService.createWorkoutRoutine(dayDTO.getWorkoutRoutineDTO());
-                day.setWorkoutRoutine(wro);
+                if (dayDTO.getWorkoutRoutineDTO() != null) {
+                    WorkoutRoutine wro = workoutRoutineService.createWorkoutRoutine(dayDTO.getWorkoutRoutineDTO());
+                    day.setWorkoutRoutine(wro);
+                }
+
+                dayRepository.save(day);
+
+                return "Successfully created a workout day!";
+            } else {
+                throw new DayException("Day for this date already exists!");
             }
-
-            dayRepository.save(day);
-
-            return "Successfully created a workout day!";
         } catch (DailyActivityException | InvalidBodyTypeGoalException e) {
             throw new RuntimeException(e);
         }

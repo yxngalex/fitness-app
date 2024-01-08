@@ -28,7 +28,7 @@ public class TrophyServiceImpl implements TrophyService {
     @Override
     public TrophyUserDTO achieveWelcome() {
         User loggedUser = userService.getLoggedUser();
-        Trophy trophy = trophyRepository.findTrophyByTrophyName(TrophyEnum.IT_BEGINS_NOW.toString());
+        Trophy trophy = trophyRepository.findTrophyByTrophyName(TrophyEnum.WELCOME.toString());
         TrophyUser existingTrophyUser = trophyUserRepository.findTrophyUserByTrophyAndUser(trophy, loggedUser);
 
         if (existingTrophyUser != null && existingTrophyUser.getIsAchieved()) {

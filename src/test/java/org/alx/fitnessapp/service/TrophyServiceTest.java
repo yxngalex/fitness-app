@@ -32,8 +32,8 @@ public class TrophyServiceTest extends ConfigBaseTest {
         User user = userService.getLoggedUser();
         Trophy trophy = new Trophy();
         trophy.setId(1);
-        trophy.setTrophyName(TrophyEnum.IT_BEGINS_NOW.toString());
-        when(trophyRepository.findTrophyByTrophyName(TrophyEnum.IT_BEGINS_NOW.toString())).thenReturn(trophy);
+        trophy.setTrophyName(TrophyEnum.WELCOME.toString());
+        when(trophyRepository.findTrophyByTrophyName(TrophyEnum.WELCOME.toString())).thenReturn(trophy);
 
         TrophyUser existingTrophyUser = new TrophyUser();
         existingTrophyUser.setId(1);
@@ -47,7 +47,7 @@ public class TrophyServiceTest extends ConfigBaseTest {
         TrophyUserDTO result = trophyService.achieveWelcome();
 
         verify(userService, times(2)).getLoggedUser();
-        verify(trophyRepository, times(1)).findTrophyByTrophyName(TrophyEnum.IT_BEGINS_NOW.toString());
+        verify(trophyRepository, times(1)).findTrophyByTrophyName(TrophyEnum.WELCOME.toString());
         verify(trophyUserRepository, times(1)).findTrophyUserByTrophyAndUser(trophy, user);
 
         // Verify that the method returns null when the trophy is already achieved

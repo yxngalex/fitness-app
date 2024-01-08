@@ -31,9 +31,6 @@ public class Exercise {
     @Column(name = "EXERCISE_DESCRIPTION")
     private String exerciseDescription;
 
-    @Column(name = "FAVORITED", nullable = false)
-    private Boolean favorited;
-
     @Lob
     @Column(name = "IMAGE")
     private Blob image;
