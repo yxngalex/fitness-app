@@ -125,7 +125,7 @@ public class MealServiceTest extends ConfigBaseTest {
         mealDTO.setDayDTO(dayDTO);
         mealDTO.setFoodList(foodDTOList);
 
-        when(mealRepository.findMealByMealName(anyString(), anyString())).thenReturn(mealDTOConverter.convertMealDTOToMeal(mealDTO));
+        when(mealRepository.findMealByMealNameForDay(anyString(), any(Day.class), anyString())).thenReturn(mealDTOConverter.convertMealDTOToMeal(mealDTO));
 
         String result = mealService.createOrUpdateMeal(mealDTO);
         String expected = mealDTO.getMealName() + " updated!";

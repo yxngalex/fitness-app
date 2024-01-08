@@ -109,8 +109,7 @@ public class DayServiceImpl implements DayService {
     }
 
     private List<DayDTO> getDaysForUser(User user) {
-        User loggedUser = userService.getLoggedUser();
-        List<Day> day = dayRepository.findAllByUserId(loggedUser.getId());
+        List<Day> day = dayRepository.findAllByUserId(user.getId());
 
         List<DayDTO> dtos = new ArrayList<>();
         for (Day d : day) {
