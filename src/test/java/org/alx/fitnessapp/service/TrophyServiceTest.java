@@ -50,7 +50,6 @@ public class TrophyServiceTest extends ConfigBaseTest {
         verify(trophyRepository, times(1)).findTrophyByTrophyName(TrophyEnum.WELCOME.toString());
         verify(trophyUserRepository, times(1)).findTrophyUserByTrophyAndUser(trophy, user);
 
-        // Verify that the method returns null when the trophy is already achieved
         assertNull(result);
     }
 }
